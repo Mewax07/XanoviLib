@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"useDefineForClassFields": true,
+		"paths": {
+			"~p0/*": ["./pawnote/src/*"],
+			"~d0/*": ["./utils/desero/src/*"],
+			"~s0/*": ["./utils/schwi/src/*"],
+			"~_maq/*": ["./utils/maq/src/*"],
+		},
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"include": [
+		"pawnote/src/**/*",
+		"src/**/*",
+		"utils/desero/src/**/*",
+		"utils/schwi/src/**/*",
+		"utils/maq/src/**/*"
+	],
+	"exclude": ["node_modules", "dist"]
+}

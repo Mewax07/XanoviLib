@@ -1,0 +1,1 @@
+export const pick = (item: string) => (arr: Array<any>) => arr.map((local) => local[item]);

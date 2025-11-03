@@ -1,0 +1,1 @@
+export { TypeHttpDomaine as TypeHttpEnsembleCardinal } from "./TypeHttpDomaine";
