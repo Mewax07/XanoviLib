@@ -54,6 +54,13 @@ export class ServerSideError extends Error {
 	}
 }
 
+export class SourceTooLongError extends Error {
+	constructor(limit: number) {
+		super(`Source name is too long, should be less or equal than ${limit} characters`);
+		this.name = "SourceTooLongError";
+	}
+}
+
 export class SessionExpiredError extends Error {
 	constructor() {
 		super("The session has expired");

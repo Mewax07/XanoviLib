@@ -1,0 +1,10 @@
+{
+	"name": "uwtil",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "bun build src/index.ts --outdir dist",
+		"dev": "bun --watch src/index.ts",
+		"start": "bun run src/index.ts"
+	}
+}

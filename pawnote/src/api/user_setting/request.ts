@@ -1,3 +1,3 @@
 export interface UserSettingRequest {
-	motDePasseInvalide?: boolean;
+	// motDePasseInvalide?: boolean;
 }

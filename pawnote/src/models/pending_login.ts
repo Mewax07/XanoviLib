@@ -1,7 +1,10 @@
+import { AccountSecurityDoubleAuth } from "../api/account_security";
 import { TypeActionIHMSecurisationCompte } from "../api/models/TypeActionIHMSecurisationCompte";
 import { TypeModeGestionDoubleAuthentification } from "../api/models/TypeModeGestionDoubleAuthentification";
 import { Authentication } from "./authentication";
+import { SourceTooLongError } from "./errors";
 import { Parameters } from "./params";
+import { PasswordRules } from "./password_rules";
 import { Session } from "./session";
 
 export class PendingLogin {
@@ -84,14 +87,14 @@ export class PendingLogin {
 	}
 
 	public async validate(password: string): Promise<boolean> {
-		const ok = await new SecurisationCompteDoubleAuth(this._session).sendPasswordCheck(password);
+		const ok = await new AccountSecurityDoubleAuth(this._session).sendPasswordCheck(password);
 
 		if (ok) this._password = password;
 		return ok;
 	}
 
 	public async verify(pin: string): Promise<boolean> {
-		const ok = await new SecurisationCompteDoubleAuth(this._session).sendPinVerify(pin);
+		const ok = await new AccountSecurityDoubleAuth(this._session).sendPinVerify(pin);
 
 		if (ok) this._pin = pin;
 		return ok;
@@ -102,6 +105,6 @@ export class PendingLogin {
 
 		this._source = source;
 
-		return new SecurisationCompteDoubleAuth(this._session).sendSourceAlreadyKnown(source);
+		return new AccountSecurityDoubleAuth(this._session).sendSourceAlreadyKnown(source);
 	}
 }

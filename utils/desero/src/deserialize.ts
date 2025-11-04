@@ -1,7 +1,11 @@
+import { getConfig } from "~t0/index";
 import { getModelMetadata } from "./metadata";
 import { SchemaType } from "./schema/type";
 
 export function deserialize<T extends new (...args: any[]) => any>(Model: T, data: any): InstanceType<T> {
+	const config = getConfig();
+	const DEBUG = !!config.deserialize;
+
 	const model = new Model();
 	const metadata = getModelMetadata(model);
 
@@ -13,6 +17,18 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 
 		if (info?.rename) {
 			value = data[info.rename];
+		}
+
+		if (DEBUG) {
+			console.log(`\nField: "${field}"`);
+			console.log("Schema:", {
+				typeof: schema.typeof,
+				array: !!schema.array,
+				reference: schema.reference?.name,
+				optional: !!schema.optional,
+				enum: schema.enum ? Object.values(schema.enum) : undefined,
+			});
+			console.log("Value (raw):", safeStringify(value));
 		}
 
 		if (value === null || value === undefined) {
@@ -38,8 +54,7 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 				} else if (schema.reference) {
 					throw new Error(`default value is not allowed on reference fields ("${field}")`);
 				}
-			}
-			else if (!schema.optional) {
+			} else if (!schema.optional) {
 				throw new Error(`required field "${field}" is undefined in provided data`);
 			} else {
 				value = null;
@@ -52,7 +67,9 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 			} else if (schema.array) {
 				const processArray = (value: any, schema: SchemaType): any => {
 					if (!Array.isArray(value)) {
-						throw new Error(`expected array but got "${typeof value}"`);
+						throw new Error(
+							`expected array but got "${typeof value}", with value: ${safeStringify(value)}`,
+						);
 					}
 
 					return value.map((item) => {
@@ -76,8 +93,20 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 			}
 		}
 
+		if (DEBUG) {
+			console.log("Value (final):", safeStringify(value));
+		}
+
 		model[field] = value;
 	}
 
 	return model;
+}
+
+function safeStringify(value: any): string {
+	try {
+		return JSON.stringify(value, null, 2);
+	} catch {
+		return String(value);
+	}
 }

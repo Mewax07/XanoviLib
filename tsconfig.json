@@ -10,6 +10,7 @@
 			"~p0/*": ["./pawnote/src/*"],
 			"~d0/*": ["./utils/desero/src/*"],
 			"~s0/*": ["./utils/schwi/src/*"],
+			"~t0/*": ["./utils/uwtil/src/*"],
 			"~_maq/*": ["./utils/maq/src/*"],
 		},
 		"strict": true,
@@ -24,6 +25,7 @@
 		"src/**/*",
 		"utils/desero/src/**/*",
 		"utils/schwi/src/**/*",
+		"utils/uwtil/src/**/*",
 		"utils/maq/src/**/*"
 	],
 	"exclude": ["node_modules", "dist"]

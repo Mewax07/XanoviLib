@@ -1,21 +1,21 @@
 import { RequestFunction, ResponseFunction, ResponseFunctionWrapper, Session } from "../../models";
 import { UserSettingRequest } from "./request";
-import { UserSettingModel } from "./response";
+import { UserSettingModel, UserSettingSignature } from "./response";
 
-export type UserSettingResponse = ResponseFunctionWrapper<UserSettingModel>;
+export type UserSettingResponse = ResponseFunctionWrapper<UserSettingModel, UserSettingSignature>;
 
 export class UserSetting extends RequestFunction<UserSettingRequest> {
 	private static readonly name = "ParametresUtilisateur";
 
-	private readonly decoder = new ResponseFunction(this.session, UserSettingModel);
+	private readonly decoder = new ResponseFunction(this.session, UserSettingModel, UserSettingSignature);
 
 	public constructor(session: Session) {
 		super(session, UserSetting.name);
 	}
 
-	public async send(withInvalidPassword?: boolean): Promise<UserSettingResponse> {
+	public async send(/*withInvalidPassword?: boolean*/): Promise<UserSettingResponse> {
 		const response = await this.execute({
-			motDePasseInvalide: withInvalidPassword,
+			// motDePasseInvalide: withInvalidPassword, // TODO: This is a stupid feature
 		});
 
 		return this.decoder.decode(response);

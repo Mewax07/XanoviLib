@@ -3,6 +3,7 @@ import { HeaderKeys, HttpRequest, HttpRequestMethod, HttpResponse, send } from "
 import { UA } from "../core";
 import { deflate } from "../core/deflate";
 import { Session } from "./session";
+import { WhoCallMe } from "../../../utils/uwtil/src/index";
 
 export abstract class RequestFunction<Data, Signature = undefined> {
 	protected constructor(
@@ -31,6 +32,7 @@ export abstract class RequestFunction<Data, Signature = undefined> {
 		return payload ? bytesToHex(payload) : properties;
 	}
 
+	@WhoCallMe
 	protected async execute(data?: Data, signature?: Signature): Promise<HttpResponse> {
 		return this.session.api.queue.run(async () => {
 			this.session.api.order++;

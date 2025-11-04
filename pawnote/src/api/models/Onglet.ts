@@ -5,5 +5,5 @@ export class Onglet {
 	public tab = t.number();
 
 	@rename("Onglet")
-	public sub = t.option(t.array(t.reference(Onglet)));
+	public children = t.option(t.array(t.reference(Onglet)));
 }

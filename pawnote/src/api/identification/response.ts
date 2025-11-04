@@ -8,4 +8,7 @@ export class IdentificationModel {
 	@rename("modeCompMdp")
 	public lowerMod = t.boolean();
 	public challenge = t.string();
+
+	@rename("login")
+	public username = t.option(t.string());
 }

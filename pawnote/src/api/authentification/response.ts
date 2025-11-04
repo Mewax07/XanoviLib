@@ -29,7 +29,7 @@ export class AuthentificationModel {
 	public isPinCodeFixed = t.boolean();
 
 	@rename("reglesSaisieMDP")
-	public changePasswordRules = t.reference(ReglesSaisieMDP);
+	public passwordRules = t.reference(ReglesSaisieMDP);
 
 	@rename("actionsDoubleAuth")
 	@deserializeWith(TypeHttpEnsembleNombre.deserializer)

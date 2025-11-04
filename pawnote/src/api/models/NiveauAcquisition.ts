@@ -6,9 +6,12 @@ import { deserializeWith, rename, t } from "~d0/index";
 class Position {
 	@rename("G")
 	public kind = t.number();
+
 	@rename("L")
 	public title = t.string();
+
 	public abbreviation = t.string();
+
 	@rename("abbreviationAvecPrefixe")
 	public abbreviationWithPrefix = t.option(t.string());
 }
@@ -23,7 +26,7 @@ export class NiveauAcquisition {
 	public P = t.number();
 
 	@rename("listePositionnements")
-	@deserializeWith(new TypeHttpElement(Position).deserializer)
+	@deserializeWith(new TypeHttpElement(Position).array)
 	public positions = t.array(t.reference(Position));
 
 	@rename("positionJauge")

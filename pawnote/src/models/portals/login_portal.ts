@@ -1,10 +1,11 @@
 import { deserialize } from "~d0/deserialize";
-import { UA } from "~p0/core";
 import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "~s0/index.bun";
+import { AccountSecurityDoubleAuth } from "../../api/account_security";
 import { Authentification } from "../../api/authentification";
 import { FonctionParametres } from "../../api/function";
 import { Identification, IdentificationMode } from "../../api/identification";
 import { UserSetting } from "../../api/user_setting";
+import { UA } from "../../core";
 import { Authentication } from "../authentication";
 import { BusyPageError, PageUnavailableError, SuspendedIpError } from "../errors";
 import { Identity } from "../identify";
@@ -95,7 +96,7 @@ export abstract class LoginPortal {
 			login.shouldEnterPin ||
 			login.shouldRegisterSource
 		) {
-			const token = await new SecurisationCompteDoubleAuth(login._session).save(
+			const token = await new AccountSecurityDoubleAuth(login._session).save(
 				login._mode,
 				login._password,
 				login._pin,

@@ -1,6 +1,7 @@
 import { bytesToUtf8, hexToBytes } from "@noble/ciphers/utils.js";
 import { AuthentificationResponse } from "../api/authentification";
 import { TypeActionIHMSecurisationCompte } from "../api/models/TypeActionIHMSecurisationCompte";
+import { TypeModeGestionDoubleAuthentification } from "../api/models/TypeModeGestionDoubleAuthentification";
 import { PasswordRules } from "./password_rules";
 import { Session } from "./session";
 
