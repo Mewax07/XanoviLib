@@ -1,0 +1,22 @@
+{
+	"name": "desero",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "bun build src/index.ts --outdir dist",
+		"dev": "bun --watch src/index.ts",
+		"start": "bun run src/index.ts"
+	},
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": {
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
+		},
+		"require": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	}
+}

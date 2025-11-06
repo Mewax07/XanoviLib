@@ -1,0 +1,61 @@
+{
+	"name": "schwi",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"exports": {
+		"react-native": {
+			"import": {
+				"types": "./dist/index.react-native.d.mts",
+				"default": "./dist/index.react-native.mjs"
+			},
+			"default": {
+				"types": "./dist/index.react-native.d.ts",
+				"default": "./dist/index.react-native.js"
+			}
+		},
+		"browser": {
+			"import": {
+				"types": "./dist/index.tauri.d.mts",
+				"default": "./dist/index.tauri.mjs"
+			},
+			"default": {
+				"types": "./dist/index.tauri.d.ts",
+				"default": "./dist/index.tauri.js"
+			}
+		},
+		"bun": {
+			"import": {
+				"types": "./dist/index.bun.d.mts",
+				"default": "./dist/index.bun.mjs"
+			},
+			"default": {
+				"types": "./dist/index.bun.d.ts",
+				"default": "./dist/index.bun.js"
+			}
+		},
+		"default": {
+			"import": {
+				"types": "./dist/index.node.d.mts",
+				"default": "./dist/index.node.mjs"
+			},
+			"default": {
+				"types": "./dist/index.node.d.ts",
+				"default": "./dist/index.node.js"
+			}
+		}
+	},
+	"scripts": {
+		"build": "bun build src/index.ts --outdir dist",
+		"dev": "bun --watch src/index.ts",
+		"start": "bun run src/index.ts"
+	},
+	"dependencies": {
+		"undici": "^7.16.0"
+	},
+	"optionalDependencies": {
+		"@tauri-apps/plugin-http": "^2.5.2",
+		"cheerio": "^1.1.2",
+		"fast-xml-parser": "^5.2.5",
+		"react-native-real-fetch": "^0.1.3"
+	}
+}

@@ -35,3 +35,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # My preferences
 ignored
+
+# Rust build folder
+target
+Cargo.lock
+
+# Cargo package files
+**/*.rs.bk
+**/*.rs~ 
