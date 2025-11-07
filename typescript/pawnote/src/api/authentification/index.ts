@@ -1,18 +1,21 @@
 import { bytesToHex } from "@noble/ciphers/utils.js";
-import { ApiFunction } from "../../core/builder";
-import { AccessDeniedError, AccountDisabledError, AuthenticateError, BadCredentialsError } from "../../models";
+import { AccessDeniedError, AccountDisabledError, AuthenticateError, BadCredentialsError, Session } from "../../models";
 import { RequestFunction } from "../../models/request";
-import { ResponseFunctionWrapper } from "../../models/response";
+import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
 import { AuthentificationRequest } from "./request";
 import { AuthentificationModel } from "./response";
 
 export type AuthentificationResponse = ResponseFunctionWrapper<AuthentificationModel>;
 
-@ApiFunction({
-	name: "Authentification",
-	model: AuthentificationModel,
-})
 export class Authentification extends RequestFunction<AuthentificationRequest> {
+	private static readonly name = "Authentification";
+
+	private readonly decoder = new ResponseFunction(this.session, AuthentificationModel);
+
+	public constructor(session: Session) {
+		super(session, Authentification.name);
+	}
+
 	public async send(solution: Uint8Array): Promise<AuthentificationResponse> {
 		const response = await this.execute({
 			connexion: 0,

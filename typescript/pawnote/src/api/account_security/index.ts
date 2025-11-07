@@ -1,19 +1,23 @@
 import { bytesToHex } from "@noble/ciphers/utils.js";
-import { ApiFunction } from "~p0/core/builder";
 import { RequestFunction } from "../../models/request";
-import { ResponseFunctionWrapper } from "../../models/response";
 import { TypeCommandeSecurisationCompteHttp } from "../models/TypeCommandeSecurisationCompteHttp";
 import { TypeModeGestionDoubleAuthentification } from "../models/TypeModeGestionDoubleAuthentification";
 import { AccountSecurityDoubleAuthRequest } from "./request";
 import { AccountSecurityDoubleAuthModel } from "./response";
+import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
+import { Session } from "../../models";
 
 export type AccountSecurityDoubleAuthResponse = ResponseFunctionWrapper<AccountSecurityDoubleAuthModel>;
 
-@ApiFunction({
-	name: "SecurisationCompteDoubleAuth",
-	model: AccountSecurityDoubleAuthModel,
-})
 export class AccountSecurityDoubleAuth extends RequestFunction<AccountSecurityDoubleAuthRequest> {
+	public static readonly name = "SecurisationCompteDoubleAuth";
+
+	private readonly decoder = new ResponseFunction(this.session, AccountSecurityDoubleAuthModel);
+
+	public constructor(session: Session) {
+		super(session, AccountSecurityDoubleAuth.name);
+	}
+
 	public async sendPasswordCheck(password: string): Promise<boolean> {
 		const response = await this.execute({
 			action: TypeCommandeSecurisationCompteHttp.csch_VerifierMotDePassePersonnalise,

@@ -13,4 +13,8 @@ export class StudentAdministration {
 		if (this._user instanceof Student) return this._user;
 		else return this._sub!;
 	}
+
+	public async getHomepage(weekNumber?: number) {
+		return 0;
+	}
 }

@@ -1,5 +1,4 @@
-import { ApiFunction } from "../../core/builder";
-import { RequestFunction, ResponseFunctionWrapper } from "../../models";
+import { RequestFunction, ResponseFunction, ResponseFunctionWrapper, Session } from "../../models";
 import { IdentificationRequest } from "./request";
 import { IdentificationModel } from "./response";
 
@@ -12,11 +11,15 @@ export enum IdentificationMode {
 	QR,
 }
 
-@ApiFunction({
-	name: "Identification",
-	model: IdentificationModel,
-})
 export class Identification extends RequestFunction<IdentificationRequest> {
+	private static readonly name = "Identification";
+
+	private readonly decoder = new ResponseFunction(this.session, IdentificationModel);
+
+	public constructor(session: Session) {
+		super(session, Identification.name);
+	}
+
 	public async send(username: string, uuid: string, mode: IdentificationMode): Promise<IdentificationResponse> {
 		const token = mode === IdentificationMode.Token;
 		const cas = mode === IdentificationMode.CAS;

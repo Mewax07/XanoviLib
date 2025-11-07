@@ -1,20 +1,20 @@
-import { Date } from "../types";
+import { ObjectDate } from "../interface/Date";
 
 export interface HomepageRequest {
 	EDT: {
 		numeroSemaine: number;
 	};
 	TAFARendre: {
-		date: Date;
+		date: ObjectDate;
 	};
 	TAFEtActivites: {
-		date: Date;
+		date: ObjectDate;
 	};
 	avecConseilDeClasse: boolean;
 	coursNonAssures: {
 		numeroSemaine: number;
 	};
-	dateGrille: Date;
+	dateGrille: ObjectDate;
 	donneesProfs: {
 		numeroSemaine: number;
 	};
@@ -28,10 +28,10 @@ export interface HomepageRequest {
 		numeroSemaine: number;
 	};
 	menuDeLaCantine: {
-		date: Date;
+		date: ObjectDate;
 	};
 	modificationsEDT: {
-		date: Date;
+		date: ObjectDate;
 	};
 	numeroSemaine: number;
 	partenaireCDI: {
@@ -41,12 +41,12 @@ export interface HomepageRequest {
 		numeroSemaine: number;
 	};
 	previsionnelAbsServiceAnnexe: {
-		date: Date;
+		date: ObjectDate;
 	};
 	registreAppel: {
-		date: Date;
+		date: ObjectDate;
 	};
 	tableauDeBord: {
-		date: Date;
+		date: ObjectDate;
 	};
 }

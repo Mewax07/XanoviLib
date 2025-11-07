@@ -15,6 +15,7 @@ import { PendingLogin } from "../pending_login";
 import { HomepageSession, Session } from "../session";
 import { UserParameters } from "../user_params";
 import { Webspace } from "../webspace";
+import { GlobalContext } from "~t0/_fix_later_context";
 
 export abstract class LoginPortal {
 	protected constructor(protected readonly _instance: Instance) {}
@@ -31,7 +32,9 @@ export abstract class LoginPortal {
 
 		const session = new Session(instance, homepage, this._instance.base);
 
-		const parameters = new Parameters(await new FonctionParametres(session).send(navigatorIdentifier));
+		const params_response = await new FonctionParametres(session).send(navigatorIdentifier);
+		const parameters = new Parameters(params_response);
+		GlobalContext.initCycle(params_response);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Credentials),
@@ -69,7 +72,9 @@ export abstract class LoginPortal {
 
 		const session = new Session(instance, homepage, this._instance.base);
 
-		const parameters = new Parameters(await new FonctionParametres(session).send(navigatorIdentifier));
+		const params_response = await new FonctionParametres(session).send(navigatorIdentifier);
+		const parameters = new Parameters(params_response);
+		GlobalContext.initCycle(params_response);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Token),

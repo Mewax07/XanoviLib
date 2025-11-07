@@ -1,20 +1,23 @@
 import { randomBytes } from "@noble/ciphers/utils.js";
 import { base64 } from "@scure/base";
 import { PKCS1_KEM } from "micro-rsa-dsa-dh/rsa.js";
-import { ApiFunction } from "../../core/builder";
+import { Session } from "../../models";
 import { RequestFunction } from "../../models/request";
-import { ResponseFunctionWrapper } from "../../models/response";
+import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
 import { FonctionParametresRequest } from "./request";
 import { FonctionParametresModel, FonctionParametresSignature } from "./response";
 
 export type FonctionParametresResponse = ResponseFunctionWrapper<FonctionParametresModel, FonctionParametresSignature>;
 
-@ApiFunction({
-	name: "FonctionParametres",
-	model: FonctionParametresModel,
-	signature: FonctionParametresSignature,
-})
 export class FonctionParametres extends RequestFunction<FonctionParametresRequest> {
+	private static readonly name = "FonctionParametres";
+
+	private readonly decoder = new ResponseFunction(this.session, FonctionParametresModel, FonctionParametresSignature);
+
+	public constructor(session: Session) {
+		super(session, FonctionParametres.name);
+	}
+
 	private readonly iv = randomBytes(16);
 
 	private generateUUID(): string {
