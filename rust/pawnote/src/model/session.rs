@@ -1,16 +1,11 @@
+use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use md5::{Digest, Md5};
 use rsa::RsaPublicKey;
-use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::model::{
-    instance::InstanceInformation,
-    version::Version,
-    webspace::Webspace,
-};
+use crate::model::{instance::InstanceInformation, version::Version};
 
-/// AES-CBC avec MD5 dérivation comme dans ton TS
 type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
 type Aes128CbcDec = cbc::Decryptor<aes::Aes128>;
 
@@ -21,7 +16,7 @@ pub struct Session {
 }
 
 impl Session {
-    pub fn new(instance: InstanceInformation, homepage: HomepageSession, url: String) -> Self {
+    pub fn new(instance: InstanceInformation, homepage: HomepageSession, _url: String) -> Self {
         let rsa = SessionRSA::new(&homepage);
         let aes = SessionAES::new();
         let api = SessionAPI::new(&homepage, &instance.version);
@@ -41,7 +36,9 @@ impl SessionRSA {
 
     pub fn new(session: &HomepageSession) -> Self {
         let mut modulus = rsa::BigUint::parse_bytes(
-            Self::DEFAULT_RSA_MODULUS.trim_start_matches("0x").as_bytes(),
+            Self::DEFAULT_RSA_MODULUS
+                .trim_start_matches("0x")
+                .as_bytes(),
             16,
         )
         .unwrap();
@@ -99,14 +96,24 @@ impl SessionAES {
         hasher.finalize().into()
     }
 
-    pub fn encrypt(&self, input: impl AsRef<[u8]>) -> Vec<u8> {
+    pub fn encrypt(&self, input: &[u8]) -> Vec<u8> {
+        let mut buf = input.to_vec();
+
+        buf.extend_from_slice(&[0u8; 16]);
         let cipher = Aes128CbcEnc::new(&self.mkey().into(), &self.miv().into());
-        cipher.encrypt_padded_vec::<Pkcs7>(input.as_ref())
+        let encrypted = cipher
+            .encrypt_padded_mut::<Pkcs7>(&mut buf, input.len())
+            .expect("Encryption failed");
+        encrypted.to_vec()
     }
 
     pub fn decrypt(&self, data: &[u8]) -> Vec<u8> {
+        let mut buf = data.to_vec();
         let cipher = Aes128CbcDec::new(&self.mkey().into(), &self.miv().into());
-        cipher.decrypt_padded_vec::<Pkcs7>(data).expect("Invalid padding")
+        let decrypted = cipher
+            .decrypt_padded_mut::<Pkcs7>(&mut buf)
+            .expect("Invalid padding");
+        decrypted.to_vec()
     }
 }
 
@@ -159,7 +166,8 @@ impl SessionAPI {
     pub fn new(session: &HomepageSession, version: &Version) -> Self {
         let mut properties = HashMap::new();
 
-        let (skip_encryption, skip_compression) = if version.is_greater_than_or_equal_to_2025_1_3() {
+        let (skip_encryption, skip_compression) = if version.is_greater_than_or_equal_to_2025_1_3()
+        {
             (!session.enforce_encryption, !session.enforce_compression)
         } else {
             (session.skip_encryption, session.skip_compression)

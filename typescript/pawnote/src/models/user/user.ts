@@ -23,4 +23,16 @@ export abstract class User {
 	public get uuid(): string {
 		return this.authentication.uuid;
 	}
+
+	public get id(): string {
+		return this.user.resource.id;
+	}
+
+	public get name(): string {
+		return this.user.resource.name;
+	}
+
+	public get kind(): number {
+		return this.user.resource.kind;
+	}
 }
