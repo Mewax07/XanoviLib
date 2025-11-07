@@ -1,9 +1,8 @@
+use pawnote::Version;
 use schwi::{HttpRequestBuilder, HttpRequestMethod, HttpRequestRedirection, send};
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
-
     let req = HttpRequestBuilder::new("https://example.com").set_method(HttpRequestMethod::Get).build();
 
     println!("Request URL: {}", req.url);
@@ -17,8 +16,11 @@ async fn main() {
         Ok(resp) => {
             println!("Status: {}", resp.status);
             println!("URL: {}", resp.url);
-            println!("Body: {}", resp.text());
+            // println!("Body: {}", resp.text());
         }
         Err(e) => eprintln!("Request failed: {}", e),
     }
+
+    let v = Version::new(2024, 3, 10);
+    println!(">= 2024.3.9 ? {}", v.is_greater_than_or_equal_to_2024_3_9());
 }
