@@ -8,6 +8,7 @@ import { User } from "./user";
 export class Student extends User {
 	public readonly administration: StudentAdministration;
 
+	/** @internal */
 	public constructor(user: UserParameters, session: Session, parameters: Parameters, authentication: Authentication) {
 		super(user, session, parameters, authentication);
 		this.administration = new StudentAdministration(this);

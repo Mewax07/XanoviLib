@@ -2,7 +2,7 @@ import Xanovi from "../../src";
 const { pronote: pawnote } = Xanovi;
 
 const instance = pawnote.Instance.fromURL("https://demo.index-education.net/pronote/parent.html");
-const portal = new pawnote.ParentLoginPortal(instance);
+const portal = new pawnote.StudentLoginPortal(instance);
 const auth = await portal.credentials("demonstration", "pronotevs");
 
 console.info(`[*] authenticating to ${instance.base}...`);

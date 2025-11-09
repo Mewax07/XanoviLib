@@ -2,7 +2,7 @@ import { deserialize } from "~d0/deserialize";
 import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "~s0/index.bun";
 import { AccountSecurityDoubleAuth } from "../../api/account_security";
 import { Authentification } from "../../api/authentification";
-import { FunctionParameters, FunctionParametersResponse } from "../../api/function";
+import { FunctionParameters } from "../../api/function";
 import { Identification, IdentificationMode } from "../../api/identification";
 import { UserSetting } from "../../api/user_setting";
 import { UA } from "../../core";
@@ -17,8 +17,10 @@ import { UserParameters } from "../user_params";
 import { Webspace } from "../webspace";
 
 export abstract class LoginPortal {
+	/** @internal */
 	protected constructor(protected readonly _instance: Instance) {}
 
+	/** @internal */
 	protected async _credentials(
 		webspace: Webspace,
 		username: string,
@@ -55,6 +57,7 @@ export abstract class LoginPortal {
 		return new PendingLogin(session, parameters, authentication);
 	}
 
+	/** @internal */
 	protected async _token(
 		webspace: Webspace,
 		username: string,
@@ -89,6 +92,7 @@ export abstract class LoginPortal {
 		return new PendingLogin(session, parameters, authentication);
 	}
 
+	/** @internal */
 	protected async _finish(login: PendingLogin): Promise<UserParameters> {
 		if (
 			login.shouldCustomDoubleAuthMode ||
@@ -109,6 +113,7 @@ export abstract class LoginPortal {
 		return new UserParameters(await new UserSetting(login._session).send());
 	}
 
+	/** @internal */
 	private async _getWebspaceHomepageSession(
 		webspace: Webspace,
 		cookies: Record<string, string> = {},
@@ -147,6 +152,7 @@ export abstract class LoginPortal {
 		const arg = html.substring(html.indexOf(from) + from.length, html.indexOf(to));
 
 		const json = JSON.parse(arg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/gu, '"$2": ').replace(/'/gu, '"'));
+		console.log(json);
 
 		return deserialize(HomepageSession, json);
 	}

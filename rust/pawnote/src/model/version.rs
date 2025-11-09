@@ -1,5 +1,4 @@
 use serde::{Deserialize, Deserializer, Serialize};
-use std::fmt;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Version {

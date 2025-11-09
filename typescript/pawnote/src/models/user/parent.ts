@@ -11,7 +11,6 @@ export class Child {
 
 	/** @internal */
 	public constructor(
-		/** @internal */
 		public readonly parent: Parent,
 		private readonly _raw: InnerResource,
 	) {

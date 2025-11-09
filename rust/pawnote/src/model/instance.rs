@@ -121,7 +121,7 @@ impl Instance {
             match serde_json::from_value::<InstanceInformation>(parsed_value) {
                 Ok(i) => {
                     println!(
-                        "📦 Version: {}.{}.{}",
+                        "Version: {}.{}.{}",
                         i.version.major, i.version.minor, i.version.patch
                     );
                     i

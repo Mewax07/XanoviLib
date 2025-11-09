@@ -52,6 +52,10 @@ impl Webspace {
         }
     }
 
+    pub fn type_id(&self) -> i32 {
+        *self as i32
+    }
+
     pub fn to_mobile_path(&self) -> String {
         let wrap = |name: &str| format!("mobile.{}.html", name);
         match self {
@@ -63,5 +67,11 @@ impl Webspace {
             Webspace::Students => wrap("eleve"),
             Webspace::Company => wrap("entreprise"),
         }
+    }
+}
+
+impl Default for Webspace {
+    fn default() -> Self {
+        Webspace::Students
     }
 }

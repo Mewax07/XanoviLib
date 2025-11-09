@@ -21,9 +21,8 @@
 		"utils"
 	],
 	"scripts": {
-		"build": "bun build src/index.ts --outdir dist --target bun --format esm,cjs --minify",
-		"parse": "bun run scripts/generator.ts",
-		"readme": "bun run scripts/readme.ts",
+		"build": "bunup",
+
 		"e:instance": "bun run ./examples/instance.ts -- --p:dev2",
 		"e:p:auth": "bun run ./examples/parents/auth.ts -- --p:dev2",
 		"e:p:children": "bun run ./examples/parents/children.ts -- --p:dev2",
@@ -43,5 +42,8 @@
 	},
 	"peerDependencies": {
 		"typescript": "5.9.2"
+	},
+	"dependencies": {
+		"bunup": "^0.15.14"
 	}
 }
