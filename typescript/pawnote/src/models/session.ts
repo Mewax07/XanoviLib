@@ -14,23 +14,15 @@ export class Session {
 	public readonly aes: SessionAES;
 	public readonly api: SessionAPI;
 
-	public parameters: Parameters;
-
 	/** @internal */
 	public constructor(
 		public readonly instance: InstanceInformation,
 		public readonly homepage: HomepageSession,
 		public readonly url: string,
-		parameters: Parameters,
 	) {
-		this.parameters = parameters;
 		this.rsa = new SessionRSA(homepage);
 		this.aes = new SessionAES();
 		this.api = new SessionAPI(homepage, instance.version);
-	}
-
-	public setParams(params: Parameters) {
-		this.parameters = params;
 	}
 }
 

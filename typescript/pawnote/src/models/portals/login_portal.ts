@@ -16,8 +16,6 @@ import { HomepageSession, Session } from "../session";
 import { UserParameters } from "../user_params";
 import { Webspace } from "../webspace";
 
-const initalParameters = new Parameters({} as FunctionParametersResponse);
-
 export abstract class LoginPortal {
 	protected constructor(protected readonly _instance: Instance) {}
 
@@ -31,10 +29,9 @@ export abstract class LoginPortal {
 		const instance = await this._instance.getInformation();
 		const homepage = await this._getWebspaceHomepageSession(webspace);
 
-		const session = new Session(instance, homepage, this._instance.base, initalParameters);
+		const session = new Session(instance, homepage, this._instance.base);
 
 		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
-		session.setParams(parameters);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Credentials),
@@ -70,10 +67,9 @@ export abstract class LoginPortal {
 			appliMobile: "1",
 		});
 
-		const session = new Session(instance, homepage, this._instance.base, initalParameters);
+		const session = new Session(instance, homepage, this._instance.base);
 
 		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
-		session.setParams(parameters);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Token),

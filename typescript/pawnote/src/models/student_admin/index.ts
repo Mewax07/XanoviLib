@@ -19,14 +19,14 @@ export class StudentAdministration {
 	}
 
 	public async getHomepage(week?: number): Promise<Homepage> {
-		return new Homepage(await new HomepageAPI(this._user.session).send(week));
+		return new Homepage(await new HomepageAPI(this._user).send(week));
 	}
 
 	public async getTimetableFromIntervals(start: Date, end?: Date): Promise<Timetable> {
-		return new Timetable(await new TimetableAPI(this._user.session, this._resource).sendIntervals(start, end));
+		return new Timetable(await new TimetableAPI(this._user, this._resource).sendIntervals(start, end));
 	}
 
 	public async getTimetableFromWeek(week?: number): Promise<Timetable> {
-		return new Timetable(await new TimetableAPI(this._user.session, this._resource).sendWeekNumber(week));
+		return new Timetable(await new TimetableAPI(this._user, this._resource).sendWeekNumber(week));
 	}
 }

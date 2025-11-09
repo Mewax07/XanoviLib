@@ -6,11 +6,8 @@ async function main() {
 
 	const admin = student.administration;
 
-	const homepage = await admin.getHomepage();
-	console.log("[*] Courses:", homepage.courses);
-	console.log("[*] Actualities:", homepage.actualities);
-	console.log("[*] Agenda:", homepage.agenda);
-	console.log("[*] Notes:", homepage.notes);
+	const timetable = await admin.getTimetableFromWeek();
+	console.log("[*] Courses:", timetable.courses);
 }
 
 main().catch(console.error);
