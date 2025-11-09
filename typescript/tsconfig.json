@@ -11,16 +11,18 @@
 			"~d0/*": ["./utils/desero/src/*"],
 			"~s0/*": ["./utils/schwi/src/*"],
 			"~t0/*": ["./utils/uwtil/src/*"],
-			"~_maq/*": ["./utils/maq/src/*"],
+			"~_maq/*": ["./utils/maq/src/*"]
 		},
 		"strict": true,
 		"noEmit": true,
 		"skipLibCheck": true,
 		"isolatedModules": true,
 		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"stripInternal": true
 	},
 	"include": [
+		"examples",
 		"pawnote/src/**/*",
 		"src/**/*",
 		"utils/desero/src/**/*",

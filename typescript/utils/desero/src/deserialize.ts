@@ -35,27 +35,31 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 			if (info?.defaultValue !== undefined) {
 				if (typeof info.defaultValue === "function") {
 					value = info.defaultValue();
-				} else value = info.defaultValue;
+				} else {
+					value = info.defaultValue;
+				}
 
 				if (value === null) {
-					throw new Error(`default value for field "${field}" cannot be "null"`);
+					throw new Error(`default value for field "${field}" cannot be "null"${schemaLoc(schema)}`);
 				} else if (schema.typeof && typeof value !== schema.typeof) {
 					throw new Error(
-						`default value for field "${field}" has incorrect type, got "${typeof value}" and expected "${schema.typeof}"`,
+						`default value for field "${field}" has incorrect type, got "${typeof value}" and expected "${schema.typeof}"${schemaLoc(schema)}`,
 					);
 				} else if (schema.instanceof && !(value instanceof schema.instanceof)) {
 					throw new Error(
-						`default value for field "${field}" is not an instance of "${schema.instanceof.name}"`,
+						`default value for field "${field}" is not an instance of "${schema.instanceof.name}"${schemaLoc(schema)}`,
 					);
 				} else if (schema.enum && !Object.values(schema.enum).includes(value)) {
 					throw new Error(
-						`default value (${value}) for field "${field}" does not match any value of provided enum`,
+						`default value (${value}) for field "${field}" does not match any value of provided enum${schemaLoc(schema)}`,
 					);
 				} else if (schema.reference) {
-					throw new Error(`default value is not allowed on reference fields ("${field}")`);
+					throw new Error(
+						`default value is not allowed on reference fields ("${field}")${schemaLoc(schema)}`,
+					);
 				}
 			} else if (!schema.optional) {
-				throw new Error(`required field "${field}" is undefined in provided data`);
+				throw new Error(`required field "${field}" is undefined in provided data${schemaLoc(schema)}`);
 			} else {
 				value = null;
 			}
@@ -68,7 +72,7 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 				const processArray = (value: any, schema: SchemaType): any => {
 					if (!Array.isArray(value)) {
 						throw new Error(
-							`expected array but got "${typeof value}", with value: ${safeStringify(value)}`,
+							`expected array but got "${typeof value}", with value: ${safeStringify(value)}${schemaLoc(schema)}`,
 						);
 					}
 
@@ -80,7 +84,13 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 						if (schema.array) {
 							return processArray(item, schema.array);
 						} else if (schema.reference) {
-							return deserialize(schema.reference, item);
+							try {
+								return deserialize(schema.reference, item);
+							} catch (err: any) {
+								throw new Error(
+									`error while deserializing array element of field "${field}": ${err.message}${schemaLoc(schema)}`,
+								);
+							}
 						} else {
 							return item;
 						}
@@ -89,7 +99,13 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 
 				value = processArray(value, schema.array);
 			} else if (schema.reference) {
-				value = deserialize(schema.reference, value);
+				try {
+					value = deserialize(schema.reference, value);
+				} catch (err: any) {
+					throw new Error(
+						`error while deserializing reference field "${field}": ${err.message}${schemaLoc(schema)}`,
+					);
+				}
 			}
 		}
 
@@ -101,6 +117,13 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 	}
 
 	return model;
+}
+
+function schemaLoc(schema: SchemaType): string {
+	if (schema?.sourceFile) {
+		return ` (schema defined at ${schema.sourceFile}:${schema.sourceLine}:${schema.sourceColumn})`;
+	}
+	return "";
 }
 
 function safeStringify(value: any): string {

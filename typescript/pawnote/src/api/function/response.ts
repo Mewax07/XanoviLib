@@ -15,8 +15,9 @@ import { NiveauAcquisition } from "../models/NiveauAcquisition";
 import { Periode } from "../models/Periode";
 import { Police } from "../models/Police";
 import { Recreation } from "../models/Recreation";
+import { JoursFeries } from "../models/Feries";
 
-class General {
+export class General {
 	@rename("urlSiteIndexEducation")
 	@deserializeWith(TypeHttpChaineBrute.deserializer)
 	public indexEducationUrl = t.string();
@@ -301,7 +302,8 @@ class General {
 	public maxCommentLength = t.array(t.number());
 
 	// TODO: find test data for this!
-	// public listeJoursFeries = t.array();
+	@deserializeWith(new TypeHttpElement(JoursFeries).array)
+	public listeJoursFeries = t.array(t.reference(JoursFeries));
 
 	public afficherSequences = t.boolean();
 
@@ -348,7 +350,7 @@ class General {
 	public localAuthority = t.reference(Collectivite);
 }
 
-export class FonctionParametresModel {
+export class FunctionParametersModel {
 	@rename("identifiantNav")
 	public navigatorIdentifier = t.option(t.string());
 
@@ -405,7 +407,7 @@ export class FonctionParametresModel {
 	public general = t.reference(General);
 }
 
-export class FonctionParametresSignature {
+export class FunctionParametersSignature {
 	@rename("ModeExclusif")
 	public exclusive = t.boolean();
 }

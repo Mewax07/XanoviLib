@@ -9,6 +9,7 @@ export class PasswordRules {
 	public readonly withAtLeastOneSpecialCharacter: boolean;
 	public readonly withLowerAndUpperCaseMixed: boolean;
 
+	/** @internal */
 	public constructor(_raw: ReglesSaisieMDP) {
 		this.min = _raw.min;
 		this.max = _raw.max;

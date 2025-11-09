@@ -6,10 +6,14 @@ import { UserParameters } from "../user_params";
 export abstract class User {
 	/** @internal */
 	protected constructor(
-		protected readonly user: UserParameters,
-		protected readonly session: Session,
-		protected readonly parameters: Parameters,
-		protected readonly authentication: Authentication,
+		/** @internal */
+		public readonly user: UserParameters,
+		/** @internal */
+		public readonly session: Session,
+		/** @internal */
+		public readonly parameters: Parameters,
+		/** @internal */
+		public readonly authentication: Authentication,
 	) {}
 
 	public get username(): string {

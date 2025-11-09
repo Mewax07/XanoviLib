@@ -1,20 +1,20 @@
-import { ObjectDate } from "../interface/Date";
+import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
 
-export interface HomepageRequest {
+export interface HomepageRequestData {
 	EDT: {
 		numeroSemaine: number;
 	};
 	TAFARendre: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	TAFEtActivites: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	avecConseilDeClasse: boolean;
 	coursNonAssures: {
 		numeroSemaine: number;
 	};
-	dateGrille: ObjectDate;
+	dateGrille: TypeHttpDateTime;
 	donneesProfs: {
 		numeroSemaine: number;
 	};
@@ -28,10 +28,10 @@ export interface HomepageRequest {
 		numeroSemaine: number;
 	};
 	menuDeLaCantine: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	modificationsEDT: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	numeroSemaine: number;
 	partenaireCDI: {
@@ -41,12 +41,16 @@ export interface HomepageRequest {
 		numeroSemaine: number;
 	};
 	previsionnelAbsServiceAnnexe: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	registreAppel: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
 	tableauDeBord: {
-		date: ObjectDate;
+		date: TypeHttpDateTime;
 	};
+}
+
+export interface HomepageRequestSignature {
+	onglet: 7; // TODO: find enum
 }

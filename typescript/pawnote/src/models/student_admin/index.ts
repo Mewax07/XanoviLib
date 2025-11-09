@@ -1,6 +1,10 @@
+import { Timetable as TimetableAPI } from "../../api/timetable";
+import { Homepage as HomepageAPI } from "../../api/homepage";
 import { Child } from "../user/parent";
 import { Student } from "../user/student";
 import { User } from "../user/user";
+import { Homepage } from "./Homepage";
+import { Timetable } from "./Timetable";
 
 export class StudentAdministration {
 	/** @internal */
@@ -14,7 +18,15 @@ export class StudentAdministration {
 		else return this._sub!;
 	}
 
-	public async getHomepage(weekNumber?: number) {
-		return 0;
+	public async getHomepage(week?: number): Promise<Homepage> {
+		return new Homepage(await new HomepageAPI(this._user.session).send(week));
+	}
+
+	public async getTimetableFromIntervals(start: Date, end?: Date): Promise<Timetable> {
+		return new Timetable(await new TimetableAPI(this._user.session, this._resource).sendIntervals(start, end));
+	}
+
+	public async getTimetableFromWeek(week?: number): Promise<Timetable> {
+		return new Timetable(await new TimetableAPI(this._user.session, this._resource).sendWeekNumber(week));
 	}
 }

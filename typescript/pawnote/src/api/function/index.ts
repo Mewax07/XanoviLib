@@ -5,17 +5,17 @@ import { Session } from "../../models";
 import { RequestFunction } from "../../models/request";
 import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
 import { FonctionParametresRequest } from "./request";
-import { FonctionParametresModel, FonctionParametresSignature } from "./response";
+import { FunctionParametersModel, FunctionParametersSignature } from "./response";
 
-export type FonctionParametresResponse = ResponseFunctionWrapper<FonctionParametresModel, FonctionParametresSignature>;
+export type FunctionParametersResponse = ResponseFunctionWrapper<FunctionParametersModel, FunctionParametersSignature>;
 
-export class FonctionParametres extends RequestFunction<FonctionParametresRequest> {
+export class FunctionParameters extends RequestFunction<FonctionParametresRequest> {
 	private static readonly name = "FonctionParametres";
 
-	private readonly decoder = new ResponseFunction(this.session, FonctionParametresModel, FonctionParametresSignature);
+	private readonly decoder = new ResponseFunction(this.session, FunctionParametersModel, FunctionParametersSignature);
 
 	public constructor(session: Session) {
-		super(session, FonctionParametres.name);
+		super(session, FunctionParameters.name);
 	}
 
 	private readonly iv = randomBytes(16);
@@ -30,7 +30,7 @@ export class FonctionParametres extends RequestFunction<FonctionParametresReques
 		return base64.encode(iv);
 	}
 
-	public async send(navigatorIdentifier: string | null = null): Promise<FonctionParametresResponse> {
+	public async send(navigatorIdentifier: string | null = null): Promise<FunctionParametersResponse> {
 		const response = await this.execute({
 			identifiantNav: navigatorIdentifier,
 			Uuid: this.generateUUID(),

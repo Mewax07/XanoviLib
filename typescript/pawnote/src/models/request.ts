@@ -49,6 +49,8 @@ export abstract class RequestFunction<Data, Signature = undefined> {
 
 			const payload = await this.propertiesToPayload(properties);
 
+			console.log(payload);
+
 			const request = new HttpRequest.Builder(url)
 				.setMethod(HttpRequestMethod.POST)
 				.setHeader(HeaderKeys.CONTENT_TYPE, "application/json")

@@ -5,6 +5,7 @@ import { PublicKey } from "micro-rsa-dsa-dh/rsa.js";
 import { AsyncQueue } from "~_maq/index";
 import { defaultValue, deserializeWith, rename, t } from "~d0/index";
 import { InstanceInformation } from "./instance";
+import { Parameters } from "./params";
 import { Version } from "./version";
 import { Webspace } from "./webspace";
 
@@ -13,14 +14,23 @@ export class Session {
 	public readonly aes: SessionAES;
 	public readonly api: SessionAPI;
 
+	public parameters: Parameters;
+
+	/** @internal */
 	public constructor(
 		public readonly instance: InstanceInformation,
 		public readonly homepage: HomepageSession,
 		public readonly url: string,
+		parameters: Parameters,
 	) {
+		this.parameters = parameters;
 		this.rsa = new SessionRSA(homepage);
 		this.aes = new SessionAES();
 		this.api = new SessionAPI(homepage, instance.version);
+	}
+
+	public setParams(params: Parameters) {
+		this.parameters = params;
 	}
 }
 
@@ -105,6 +115,7 @@ export class SessionAPI {
 
 	public properties: Properties;
 
+	/** @internal */
 	public constructor(session: HomepageSession, version: Version) {
 		if (Version.isGreaterThanOrEqualTo202513(version)) {
 			this.skipEncryption = !session.enforceEncryption;

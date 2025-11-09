@@ -34,6 +34,7 @@ export class Child {
 export class Parent extends User {
 	public readonly children: Array<Child>;
 
+	/** @internal */
 	public constructor(user: UserParameters, session: Session, parameters: Parameters, authentication: Authentication) {
 		super(user, session, parameters, authentication);
 		this.children = this.user.resource.inner!.map((item) => new Child(this, item));

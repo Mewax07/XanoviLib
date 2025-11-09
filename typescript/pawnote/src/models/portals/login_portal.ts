@@ -2,7 +2,7 @@ import { deserialize } from "~d0/deserialize";
 import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "~s0/index.bun";
 import { AccountSecurityDoubleAuth } from "../../api/account_security";
 import { Authentification } from "../../api/authentification";
-import { FonctionParametres } from "../../api/function";
+import { FunctionParameters, FunctionParametersResponse } from "../../api/function";
 import { Identification, IdentificationMode } from "../../api/identification";
 import { UserSetting } from "../../api/user_setting";
 import { UA } from "../../core";
@@ -15,7 +15,8 @@ import { PendingLogin } from "../pending_login";
 import { HomepageSession, Session } from "../session";
 import { UserParameters } from "../user_params";
 import { Webspace } from "../webspace";
-import { GlobalContext } from "~t0/_fix_later_context";
+
+const initalParameters = new Parameters({} as FunctionParametersResponse);
 
 export abstract class LoginPortal {
 	protected constructor(protected readonly _instance: Instance) {}
@@ -30,11 +31,10 @@ export abstract class LoginPortal {
 		const instance = await this._instance.getInformation();
 		const homepage = await this._getWebspaceHomepageSession(webspace);
 
-		const session = new Session(instance, homepage, this._instance.base);
+		const session = new Session(instance, homepage, this._instance.base, initalParameters);
 
-		const params_response = await new FonctionParametres(session).send(navigatorIdentifier);
-		const parameters = new Parameters(params_response);
-		GlobalContext.initCycle(params_response);
+		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
+		session.setParams(parameters);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Credentials),
@@ -70,11 +70,10 @@ export abstract class LoginPortal {
 			appliMobile: "1",
 		});
 
-		const session = new Session(instance, homepage, this._instance.base);
+		const session = new Session(instance, homepage, this._instance.base, initalParameters);
 
-		const params_response = await new FonctionParametres(session).send(navigatorIdentifier);
-		const parameters = new Parameters(params_response);
-		GlobalContext.initCycle(params_response);
+		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
+		session.setParams(parameters);
 
 		const identity = new Identity(
 			await new Identification(session).send(username, deviceUUID, IdentificationMode.Token),
