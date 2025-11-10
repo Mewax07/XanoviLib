@@ -1,10 +1,8 @@
-import { getConfig } from "~t0/index";
 import { getModelMetadata } from "./metadata";
 import { SchemaType } from "./schema/type";
 
 export function deserialize<T extends new (...args: any[]) => any>(Model: T, data: any): InstanceType<T> {
-	const config = getConfig();
-	const DEBUG = !!config.deserialize;
+	const DEBUG = true;
 
 	const model = new Model();
 	const metadata = getModelMetadata(model);
@@ -19,7 +17,7 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 			value = data[info.rename];
 		}
 
-		if (DEBUG) {
+		if (DEBUG && (value === null || value === undefined)) {
 			console.log(`\nField: "${field}"`);
 			console.log("Schema:", {
 				typeof: schema.typeof,

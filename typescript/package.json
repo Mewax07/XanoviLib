@@ -27,7 +27,9 @@
 		"e:p:auth": "bun run ./examples/parents/auth.ts -- --p:dev2",
 		"e:p:children": "bun run ./examples/parents/children.ts -- --p:dev2",
 		"e:s:auth": "bun run ./examples/students/auth.ts -- --p:dev2",
-		"e:s:homepage": "bun run ./examples/students/homepage.ts -- --p:dev2"
+		"e:s:homepage": "bun run ./examples/students/homepage.ts -- --p:dev2",
+		"e:s:homework": "bun run ./examples/students/homework.ts -- --p:dev1",
+		"e:s:timetable": "bun run ./examples/students/timetable.ts -- --p:dev2"
 	},
 	"files": [
 		"dist"

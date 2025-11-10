@@ -28,7 +28,8 @@
 		"utils/desero/src/**/*",
 		"utils/schwi/src/**/*",
 		"utils/uwtil/src/**/*",
-		"utils/maq/src/**/*"
+		"utils/maq/src/**/*",
+		"tools"
 	],
 	"exclude": ["node_modules", "dist"]
 }

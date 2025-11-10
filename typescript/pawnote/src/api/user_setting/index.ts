@@ -18,7 +18,7 @@ export class UserSetting extends RequestFunction<UserSettingRequest> {
 	public async send() //withInvalidPassword?: boolean
 	: Promise<UserSettingResponse> {
 		const response = await this.execute({
-			// motDePasseInvalide: withInvalidPassword, // TODO: This is a stupid feature
+			// motDePasseInvalide: withInvalidPassword, // NOTE: This is a stupid feature
 		});
 
 		return this.decoder.decode(response);

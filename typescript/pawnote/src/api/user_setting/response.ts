@@ -1,6 +1,6 @@
 import { defaultValue, deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpElement } from "../http/TypeHttpElement";
-import { Onglet } from "../models/Onglet";
+import { Onglet } from "../models/onglet";
 
 export class ParametresUtilisateurEDT {
 	@rename("afficherCoursAnnules")
@@ -241,7 +241,7 @@ export class Period {
 }
 
 export class UtilsNumber {
-	// TODO
+	// TODO: Add feature
 }
 
 export class TabForPeriod {

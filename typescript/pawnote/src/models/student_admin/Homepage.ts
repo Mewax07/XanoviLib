@@ -1,6 +1,5 @@
-import { Course, Notes } from "~p0/api/shared";
+import { Actualities, AgendaList, Course, Notes } from "~p0/api/shared";
 import { HomepageResponse } from "../../api/homepage";
-import { Actualities, AgendaList } from "../../api/homepage/response";
 
 export class Homepage {
 	public constructor(private _raw: HomepageResponse) {}

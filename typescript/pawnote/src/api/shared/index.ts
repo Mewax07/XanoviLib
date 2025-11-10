@@ -2,11 +2,14 @@ import { defaultValue, deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../http/TypeHttpElement";
 import { TypeHttpNote } from "../http/TypeHttpNote";
+import { AttachmentDifficulty, AttachmentReturnKind } from "../models/attachment";
 
-export class HomeworkContent {
+export class Id {
 	@rename("N")
 	public id = t.string();
+}
 
+export class HomeworkPointer extends Id {
 	// TODO: Search value of the array
 	// @rename("originesCategorie")
 	// public category = t.array(t.reference())
@@ -51,8 +54,8 @@ export class Course {
 	public content = t.array(t.reference(Content));
 
 	@rename("cahierDeTextes")
-	@deserializeWith(new TypeHttpElement(HomeworkContent).single)
-	public homework = t.option(t.reference(HomeworkContent));
+	@deserializeWith(new TypeHttpElement(HomeworkPointer).single)
+	public homework = t.option(t.reference(HomeworkPointer));
 
 	@rename("AvecTafPublie")
 	public withHomeworkPublished = t.boolean();
@@ -195,7 +198,7 @@ export class Notes {
 
 	@rename("listeDevoirs")
 	@deserializeWith(new TypeHttpElement(Note).array)
-	public homework = t.array(t.reference(Note));
+	public listAssignments = t.array(t.reference(Note));
 }
 
 export class Recess {
@@ -249,10 +252,7 @@ export class GridPreferences {
 	public resourceType = t.number();
 }
 
-export class Subject {
-	@rename("N")
-	public id = t.string();
-}
+export class ResourceSubject extends Id {}
 
 export class Resource {
 	@rename("G")
@@ -265,8 +265,8 @@ export class Resource {
 	public date = t.reference(Date);
 
 	@rename("matiere")
-	@deserializeWith(new TypeHttpElement(Subject).single)
-	public subject = t.array(t.reference(Subject));
+	@deserializeWith(new TypeHttpElement(ResourceSubject).single)
+	public subject = t.array(t.reference(ResourceSubject));
 
 	@rename("ressources")
 	@deserializeWith(new TypeHttpElement(Content).array)
@@ -279,6 +279,93 @@ export class EducationalResource {
 	public listOfContents = t.array(t.reference(Service));
 
 	@rename("listeRessources")
-	@deserializeWith(new TypeHttpElement(Service).array)
-	public listResources = t.array(t.reference(Service));
+	@deserializeWith(new TypeHttpElement(Resource).array)
+	public listResources = t.array(t.reference(Resource));
+}
+
+export class HomeworkContentSubject {
+	@rename("L")
+	public labal = t.string();
+
+	@rename("N")
+	public id = t.string();
+}
+
+export class HomeworkBase {
+	@rename("N")
+	public id = t.string();
+
+	@rename("duree")
+	public duringTime = t.number();
+
+	@rename("CouleurFond")
+	public backgroundColor = t.string();
+
+	@rename("peuRendre")
+	public canComplete = t.option(t.boolean());
+
+	@rename("avecRendu")
+	public withReturn = t.option(t.boolean());
+
+	@rename("TAFFait")
+	public done = t.boolean();
+
+	@rename("genreRendu")
+	public returnType = t.option(t.enum(AttachmentReturnKind));
+
+	@rename("niveauDifficulte")
+	public difficultyLevel = t.option(t.enum(AttachmentDifficulty));
+}
+
+export class _Homework extends HomeworkBase {
+	@rename("nomPublic")
+	public publicName = t.option(t.string());
+
+	@rename("libelleCBTheme")
+	public themeLabel = t.option(t.string());
+
+	@rename("avecMiseEnForme")
+	public withFormat = t.boolean();
+
+	@rename("DonneLe")
+	@deserializeWith(TypeHttpDateTime.deserializer)
+	public givenOn = t.instance(Date);
+
+	@rename("PourLe")
+	@deserializeWith(TypeHttpDateTime.deserializer)
+	public dueOn = t.instance(Date);
+
+	@rename("Matiere")
+	@deserializeWith(new TypeHttpElement(HomeworkContentSubject).single)
+	public subject = t.array(t.reference(HomeworkContentSubject));
+
+	@rename("cours")
+	@deserializeWith(new TypeHttpElement(Id).single)
+	public course = t.array(t.reference(Id));
+}
+
+export class HomeworkContent extends HomeworkBase {
+	@rename("G")
+	public kind = t.number();
+
+	@rename("donneLe")
+	@deserializeWith(TypeHttpDateTime.deserializer)
+	public givenOn = t.instance(Date);
+
+	@rename("pourLe")
+	@deserializeWith(TypeHttpDateTime.deserializer)
+	public dueOn = t.instance(Date);
+
+	@rename("ordre")
+	public order = t.number();
+
+	@rename("matiere")
+	@deserializeWith(new TypeHttpElement(HomeworkContentSubject).single)
+	public subject = t.array(t.reference(HomeworkContentSubject));
+}
+
+export class Homework {
+	@rename("listeTAF")
+	@deserializeWith(new TypeHttpElement(HomeworkContent).array)
+	public dayCycles = t.array(t.reference(HomeworkContent));
 }

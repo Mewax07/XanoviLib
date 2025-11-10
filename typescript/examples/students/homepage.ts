@@ -7,10 +7,10 @@ async function main() {
 	const admin = student.administration;
 
 	const homepage = await admin.getHomepage();
-	console.log("[*] Courses:", homepage.courses);
-	console.log("[*] Actualities:", homepage.actualities);
-	console.log("[*] Agenda:", homepage.agenda);
-	console.log("[*] Notes:", homepage.notes);
+	console.log("[*] Courses:", homepage.courses[0]);
+	console.log("[*] Actualities:", homepage.actualities!.actualitiesList[0]);
+	console.log("[*] Agenda:", homepage.agenda.eventsList[0]);
+	console.log("[*] Notes:", homepage.notes.listAssignments[0]);
 }
 
 main().catch(console.error);

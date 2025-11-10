@@ -1,6 +1,7 @@
 import { bytesToUtf8, hexToBytes } from "@noble/ciphers/utils.js";
 import { deserialize } from "~d0/index";
 import { HttpResponse } from "~s0/response";
+import { getConfig } from "~t0/index";
 import { inflate } from "../core/inflate";
 import {
 	AccessDeniedError,
@@ -11,7 +12,8 @@ import {
 	SuspendedIpError,
 } from "./errors";
 import { Session } from "./session";
-import { getConfig } from "~t0/index";
+
+import util from "util";
 
 export interface ResponseFunctionWrapper<DataModel, SignatureModel = undefined> {
 	data: DataModel;
@@ -45,6 +47,9 @@ export class ResponseFunction<
 
 		try {
 			const json = JSON.parse(content);
+			if (content.includes("ListeTravauxAFaire")) {
+				// console.log(util.inspect(json, false, 10));
+			}
 
 			if (json.Erreur) {
 				const error = json.Erreur.Titre || "Server Error";

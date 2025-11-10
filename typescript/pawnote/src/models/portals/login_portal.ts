@@ -152,7 +152,6 @@ export abstract class LoginPortal {
 		const arg = html.substring(html.indexOf(from) + from.length, html.indexOf(to));
 
 		const json = JSON.parse(arg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/gu, '"$2": ').replace(/'/gu, '"'));
-		console.log(json);
 
 		return deserialize(HomepageSession, json);
 	}

@@ -1,10 +1,13 @@
 import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpElement } from "../http/TypeHttpElement";
-import { Absences, Actualities, AgendaList, Course, EducationalResource, Notes, Recess } from "../shared";
+import { Absences, Actualities, AgendaList, Course, EducationalResource, Homework, Notes, Recess } from "../shared";
 
 export class HomepageModel {
 	@rename("ListeCours")
 	public courseList = t.array(t.reference(Course));
+
+	@rename("absences")
+	public absences = t.reference(Absences);
 
 	@rename("actualites")
 	public actualities = t.option(t.reference(Actualities));
@@ -23,15 +26,12 @@ export class HomepageModel {
 	@rename("finDemiPensionHebdo")
 	public endLunchWeek = t.number();
 
-	@rename("absences")
-	public absences = t.reference(Absences);
-
 	public notes = t.reference(Notes);
 
 	@rename("recreations")
 	@deserializeWith(new TypeHttpElement(Recess).array)
 	public recesses = t.array(t.reference(Recess));
 
-	@rename("ressourcePedagogique")
-	public educationalResource = t.reference(EducationalResource);
+	@rename("travailAFaire")
+	public homework = t.reference(Homework);
 }

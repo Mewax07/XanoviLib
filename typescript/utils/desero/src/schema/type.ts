@@ -11,14 +11,13 @@ export class SchemaType {
 	sourceColumn?: number;
 }
 
-export function captureSchemaLocation(schema: SchemaType) {
-	const err = new Error();
-	if (!err.stack) return schema;
+export function captureSchemaLocationFromStack(schema: SchemaType, stack: string | undefined) {
+	if (!stack) return schema;
 
-	const lines = err.stack.split(/\r?\n/);
+	const lines = stack.split(/\r?\n/);
 
 	for (const line of lines) {
-		if (line.includes("basics.ts") || line.includes("node:internal") || line.includes("node_modules")) continue;
+		if (line.includes("desero") || line.includes("node:internal") || line.includes("node_modules")) continue;
 
 		const match = line.match(/\((.*):(\d+):(\d+)\)$/);
 		if (match) {

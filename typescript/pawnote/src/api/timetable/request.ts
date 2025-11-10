@@ -1,3 +1,5 @@
+import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
+
 type TimetableRequestDataBase = {
 	estEDTAnnuel: boolean;
 	estEDTPermanence: boolean;
@@ -22,22 +24,10 @@ export interface RequestDataResource {
 }
 
 export interface RequestDataIntervals {
-	dateDebut: {
-		_T: 7;
-		V: string;
-	};
-	DateDebut: {
-		_T: 7;
-		V: string;
-	};
-	dateFin?: {
-		_T: 7;
-		V: string;
-	};
-	DateFin?: {
-		_T: 7;
-		V: string;
-	};
+	dateDebut: TypeHttpDateTime;
+	DateDebut: TypeHttpDateTime;
+	dateFin?: TypeHttpDateTime;
+	DateFin?: TypeHttpDateTime;
 }
 
 export interface RequestDataWeekNumber {
@@ -45,11 +35,10 @@ export interface RequestDataWeekNumber {
 	NumeroSemaine: number;
 }
 
-export type TimetableRequestData = TimetableRequestDataBase &
-	(RequestDataIntervals | RequestDataWeekNumber);
+export type TimetableRequestData = TimetableRequestDataBase & (RequestDataIntervals | RequestDataWeekNumber);
 
 export interface TimetableRequestSignature {
-	onglet: 16; // TODO: find enum
+	onglet: 16;
 	membre?: {
 		G: number;
 		N: string;

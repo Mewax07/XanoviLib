@@ -179,7 +179,7 @@ export class TypeHttpDomaine {
 		}
 	};
 
-	public serialize() {
+	public serialize(): Domaine {
 		return {
 			_T: TypeHttpVariable.TypeHttpDomaine,
 			V: this._toString(),

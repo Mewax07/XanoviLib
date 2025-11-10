@@ -10,24 +10,6 @@ export enum Webspace {
 	Company = 39,
 }
 
-// NOTE: All of item of this enum Webspace is for mobile
-// export enum Webspace {
-//      Commun = 0,
-//      Teacher = 1,
-//      Parents = 2,
-//      Students = 3,
-//      Company = 4,
-//      Academy = 5,
-//      Mobile_Students = 6,
-//      Mobile_Parents = 7,
-//      Mobile_Teachers = 8,
-//      Mobile_Commun = 9,
-// // NOTE: Missing 10, 11, 12 from list : https://github.com/raphckrman/pronote-datamining/blob/main/2025.2.6/student/sp_enumere_espace.js
-//      Establishment = 13,
-//      Mobile_Establishment = 14,
-// // And many more ...
-// }
-
 export namespace Webspace {
 	const SENIOR_MANAGEMENT = "direction";
 	const TEACHER = "professeur";

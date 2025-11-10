@@ -7,15 +7,15 @@ import { TypeHttpElement } from "../http/TypeHttpElement";
 import { TypeHttpEnsembleCardinal } from "../http/TypeHttpEnsembleCardinal";
 import { EnsembleNombre, TypeHttpEnsembleNombre } from "../http/TypeHttpEnsembleNombre";
 import { TypeHttpNote } from "../http/TypeHttpNote";
-import { Collectivite } from "../models/Collectivite";
-import { Heure } from "../models/Heure";
-import { Langue } from "../models/Langue";
-import { MentionsPagesPubliques } from "../models/MentionsPagesPubliques";
-import { NiveauAcquisition } from "../models/NiveauAcquisition";
-import { Periode } from "../models/Periode";
-import { Police } from "../models/Police";
-import { Recreation } from "../models/Recreation";
-import { JoursFeries } from "../models/Feries";
+import { Collectivite } from "../models/collectivite";
+import { Heure } from "../models/heure";
+import { Langue } from "../models/langue";
+import { MentionsPagesPubliques } from "../models/mentions_pages_publiques";
+import { NiveauAcquisition } from "../models/niveau_acquisition";
+import { Periode } from "../models/periode";
+import { Police } from "../models/police";
+import { Recreation } from "../models/recreation";
+import { JoursFeries } from "../models/feries";
 
 export class General {
 	@rename("urlSiteIndexEducation")
@@ -301,7 +301,6 @@ export class General {
 	@rename("TailleMaxAppreciation")
 	public maxCommentLength = t.array(t.number());
 
-	// TODO: find test data for this!
 	@deserializeWith(new TypeHttpElement(JoursFeries).array)
 	public listeJoursFeries = t.array(t.reference(JoursFeries));
 
@@ -368,7 +367,7 @@ export class FunctionParametersModel {
 	public forNewCaledonia = t.boolean();
 
 	@rename("genreImageConnexion")
-	public loginImageType = t.number(); // TODO: find ENUM
+	public loginImageType = t.number(); // TODO: find enum
 
 	@rename("urlImageConnexion")
 	public loginImageUrl = t.string();

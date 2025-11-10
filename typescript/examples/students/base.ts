@@ -46,7 +46,7 @@ export class StudentConnector {
 		let uuid: string | undefined;
 
 		if (this.demo) {
-			url = "https://demo.index-education.net/pronote/parent.html";
+			url = "https://demo.index-education.net/pronote/eleve.html";
 			username = "demonstration";
 			console.info("[*] Mode démonstration activé.");
 		} else {

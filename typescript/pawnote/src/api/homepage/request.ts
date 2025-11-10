@@ -52,5 +52,5 @@ export interface HomepageRequestData {
 }
 
 export interface HomepageRequestSignature {
-	onglet: 7; // TODO: find enum
+	onglet: 7;
 }
