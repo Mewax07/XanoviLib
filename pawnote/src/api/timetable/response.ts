@@ -1,6 +1,12 @@
 import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpElement } from "../http/TypeHttpElement";
-import { Absences, Course, GridPreferences, Recess } from "../shared";
+import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
+import { Absences, Content, Course, Id, Recess } from "../shared";
+
+export class GridPreferences {
+	@rename("genreRessource")
+	public resourceType = t.number();
+}
 
 export class TimetableModel {
 	@rename("jourCycleSelectionne")

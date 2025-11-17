@@ -26,6 +26,7 @@ export function deserialize<T extends new (...args: any[]) => any>(Model: T, dat
 				optional: !!schema.optional,
 				enum: schema.enum ? Object.values(schema.enum) : undefined,
 			});
+			console.log(metadata);
 			console.log("Value (raw):", safeStringify(value));
 		}
 

@@ -47,9 +47,6 @@ export class ResponseFunction<
 
 		try {
 			const json = JSON.parse(content);
-			if (content.includes("ListeTravauxAFaire")) {
-				console.log(util.inspect(json, false, 10));
-			}
 
 			if (json.Erreur) {
 				const error = json.Erreur.Titre || "Server Error";
@@ -74,6 +71,12 @@ export class ResponseFunction<
 			if (data[this.session.api.properties.signature]?.Erreur) {
 				throw new ServerSideError(data[this.session.api.properties.signature].MessageErreur);
 			}
+
+			// if (content.includes("ListeTravauxAFaire")) {
+			// 	console.log(util.inspect(json, false, 10));
+			// 	console.log(util.inspect(this.DataModel, false, 10));
+			// 	console.log("test", util.inspect(data[this.session.api.properties.data], false, 10));
+			// }
 
 			return {
 				data: deserialize(this.DataModel, data[this.session.api.properties.data]),
