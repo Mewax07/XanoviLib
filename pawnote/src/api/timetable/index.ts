@@ -1,7 +1,7 @@
+import { translateToWeekNumber } from "../../core/date";
 import { Child, Student, User } from "../../models";
 import { RequestFunction } from "../../models/request";
 import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
-import { translateToWeekNumber } from "../../utils/date";
 import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
 import {
 	RequestDataIntervals,
@@ -14,7 +14,7 @@ import { TimetableModel } from "./response";
 
 export type TimetableResponse = ResponseFunctionWrapper<TimetableModel>;
 
-export class Timetable extends RequestFunction<TimetableRequestData, TimetableRequestSignature> {
+export class TimetableAPI extends RequestFunction<TimetableRequestData, TimetableRequestSignature> {
 	private static readonly name = "PageEmploiDuTemps";
 
 	private readonly user: User;
@@ -24,7 +24,7 @@ export class Timetable extends RequestFunction<TimetableRequestData, TimetableRe
 		user: User,
 		private readonly resource: Student | Child,
 	) {
-		super(user.session, Timetable.name);
+		super(user.session, TimetableAPI.name);
 		this.user = user;
 		this.decoder = new ResponseFunction(this.session, TimetableModel);
 	}
@@ -91,7 +91,7 @@ export class Timetable extends RequestFunction<TimetableRequestData, TimetableRe
 	public sendWeekNumber(week?: number): Promise<TimetableResponse> {
 		const n = week
 			? week
-			: translateToWeekNumber(this.user.parameters.general.openingDate, this.user.parameters.general.firstDate);
+			: translateToWeekNumber(this.user.parameters.nextBusinessDay, this.user.parameters.firstDate);
 
 		return this.send({
 			numeroSemaine: n,

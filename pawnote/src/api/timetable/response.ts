@@ -1,7 +1,6 @@
 import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpElement } from "../http/TypeHttpElement";
-import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
-import { Absences, Content, Course, Id, Recess } from "../shared";
+import { Absences, Course, Recess } from "../shared";
 
 export class GridPreferences {
 	@rename("genreRessource")

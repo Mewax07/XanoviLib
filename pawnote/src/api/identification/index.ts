@@ -11,13 +11,13 @@ export enum IdentificationMode {
 	QR,
 }
 
-export class Identification extends RequestFunction<IdentificationRequest> {
+export class IdentificationAPI extends RequestFunction<IdentificationRequest> {
 	private static readonly name = "Identification";
 
 	private readonly decoder = new ResponseFunction(this.session, IdentificationModel);
 
 	public constructor(session: Session) {
-		super(session, Identification.name);
+		super(session, IdentificationAPI.name);
 	}
 
 	public async send(username: string, uuid: string, mode: IdentificationMode): Promise<IdentificationResponse> {

@@ -6,20 +6,17 @@ import { UserSettingModel, UserSettingSignature } from "./response";
 
 export type UserSettingResponse = ResponseFunctionWrapper<UserSettingModel, UserSettingSignature>;
 
-export class UserSetting extends RequestFunction<UserSettingRequest> {
+export class UserSettingAPI extends RequestFunction<UserSettingRequest> {
 	private static readonly name = "ParametresUtilisateur";
 
 	private readonly decoder = new ResponseFunction(this.session, UserSettingModel, UserSettingSignature);
 
 	public constructor(session: Session) {
-		super(session, UserSetting.name);
+		super(session, UserSettingAPI.name);
 	}
 
-	public async send() //withInvalidPassword?: boolean
-	: Promise<UserSettingResponse> {
-		const response = await this.execute({
-			// motDePasseInvalide: withInvalidPassword, // NOTE: This is a stupid feature
-		});
+	public async send(): Promise<UserSettingResponse> {
+		const response = await this.execute({});
 
 		return this.decoder.decode(response);
 	}

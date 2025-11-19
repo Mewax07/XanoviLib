@@ -1,8 +1,13 @@
-import { Actualities, AgendaList, Course, Notes } from "~p0/api/shared";
-import { HomepageResponse } from "../../api/homepage";
+import { Notes } from "~p0/api/homepage/response";
+import { Actualities, AgendaList, Course } from "~p0/api/shared";
+import { Parameters } from "~p0/models/params";
+import { HomepageResponse } from "../../../api/homepage";
 
 export class Homepage {
-	public constructor(private _raw: HomepageResponse) {}
+	public constructor(
+		private parameters: Parameters,
+		private _raw: HomepageResponse,
+	) {}
 
 	public get courses(): Course[] {
 		return this._raw.data.courseList;

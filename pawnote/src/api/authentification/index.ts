@@ -7,13 +7,13 @@ import { AuthentificationModel } from "./response";
 
 export type AuthentificationResponse = ResponseFunctionWrapper<AuthentificationModel>;
 
-export class Authentification extends RequestFunction<AuthentificationRequest> {
+export class AuthentificationAPI extends RequestFunction<AuthentificationRequest> {
 	private static readonly name = "Authentification";
 
 	private readonly decoder = new ResponseFunction(this.session, AuthentificationModel);
 
 	public constructor(session: Session) {
-		super(session, Authentification.name);
+		super(session, AuthentificationAPI.name);
 	}
 
 	public async send(solution: Uint8Array): Promise<AuthentificationResponse> {

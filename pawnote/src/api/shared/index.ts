@@ -2,6 +2,7 @@ import { defaultValue, deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../http/TypeHttpElement";
 import { AttachmentDifficulty, AttachmentReturnKind } from "../models/attachment";
+import { TypeOrigineCreationCategorieCahierDeTexte } from "../models/TypeOrigineCreationCategorieCahierDeTexte";
 
 export class Id {
 	@rename("N")
@@ -17,17 +18,36 @@ export class Content {
 
 	@rename("G")
 	public kind = t.number();
+
+	@rename("estHoraire")
+	public isTimetable = t.option(t.boolean());
+
+	@rename("estServiceGroupe")
+	public isServiceGroup = t.option(t.boolean());
+}
+
+export class CategoryOrigin {
+	@rename("G")
+	public kind = t.enum(TypeOrigineCreationCategorieCahierDeTexte);
+	@rename("L")
+	public label = t.string();
+
+	@rename("libelleIcone")
+	public labelIcon = t.string();
 }
 
 export class HomeworkPointer extends Id {
-	// TODO: Search value of the array
-	// @rename("originesCategorie")
-	// public category = t.array(t.reference())
+	@rename("estDevoir")
+	public isTest = t.option(t.boolean());
+
+	@rename("originesCategorie")
+	@deserializeWith(new TypeHttpElement(CategoryOrigin).array)
+	public categories = t.array(t.reference(CategoryOrigin));
 }
 
 export class Course {
 	@rename("N")
-	public id = t.number();
+	public id = t.string();
 
 	@rename("G")
 	public kind = t.number();
@@ -48,19 +68,53 @@ export class Course {
 	@deserializeWith(TypeHttpDateTime.deserializer)
 	public courseDate = t.instance(Date);
 
+	@rename("DateDuCoursFin")
+	@deserializeWith(TypeHttpDateTime.deserializer)
+	public courseDateEnd = t.option(t.instance(Date));
+
 	@rename("ListeContenus")
 	@deserializeWith(new TypeHttpElement(Content).array)
 	public content = t.array(t.reference(Content));
 
 	@rename("cahierDeTextes")
 	@deserializeWith(new TypeHttpElement(HomeworkPointer).single)
-	public homework = t.option(t.reference(HomeworkPointer));
+	public notebook = t.option(t.reference(HomeworkPointer));
 
 	@rename("AvecTafPublie")
 	public withHomeworkPublished = t.boolean();
 
 	@rename("AvecCdT")
-	public withCahierDeTextes = t.option(t.boolean());
+	public withNotebook = t.option(t.boolean());
+
+	@rename("Statut")
+	public status = t.option(t.string());
+
+	@rename("estSortiePedagogique")
+	public isFieldTrip = t.option(t.boolean());
+
+	@rename("estRetenue")
+	public isDetention = t.option(t.boolean());
+
+	@rename("memo")
+	public notes = t.option(t.string());
+
+	@rename("estAnnule")
+	public isCancelled = t.option(t.boolean());
+
+	@rename("dispenseEleve")
+	public studentExcused = t.option(t.boolean());
+
+	@rename("accompagnateurs")
+	public supervisors = t.option(t.array(t.string()));
+
+	@rename("strGenreRess")
+	public resourceTypeLabel = t.option(t.string());
+
+	@rename("strRess")
+	public resourceLabel = t.option(t.string());
+
+	@rename("motif")
+	public reason = t.option(t.string());
 }
 
 export class Actuality {

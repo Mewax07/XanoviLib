@@ -7,7 +7,7 @@ async function main() {
 	const admin = student.administration;
 
 	const timetable = await admin.getTimetableFromWeek();
-	console.log("[*] Courses:", timetable.courses);
+	// console.log("[*] Courses:", timetable.courses);
 }
 
 main().catch(console.error);

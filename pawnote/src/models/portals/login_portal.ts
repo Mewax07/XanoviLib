@@ -1,10 +1,10 @@
 import { deserialize } from "~d0/deserialize";
 import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "~s0/index.bun";
 import { AccountSecurityDoubleAuth } from "../../api/account_security";
-import { Authentification } from "../../api/authentification";
-import { FunctionParameters } from "../../api/function";
-import { Identification, IdentificationMode } from "../../api/identification";
-import { UserSetting } from "../../api/user_setting";
+import { AuthentificationAPI } from "../../api/authentification";
+import { FunctionParametersAPI } from "../../api/function";
+import { IdentificationAPI, IdentificationMode } from "../../api/identification";
+import { UserSettingAPI } from "../../api/user_setting";
 import { UA } from "../../core";
 import { Authentication } from "../authentication";
 import { BusyPageError, PageUnavailableError, SuspendedIpError } from "../errors";
@@ -33,17 +33,17 @@ export abstract class LoginPortal {
 
 		const session = new Session(instance, homepage, this._instance.base);
 
-		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
+		const parameters = new Parameters(await new FunctionParametersAPI(session).send(navigatorIdentifier));
 
 		const identity = new Identity(
-			await new Identification(session).send(username, deviceUUID, IdentificationMode.Credentials),
+			await new IdentificationAPI(session).send(username, deviceUUID, IdentificationMode.Credentials),
 		);
 
 		const key = identity.createMiddlewareKey(username, password);
 		const challenge = identity.solveChallenge(session, key);
 
 		const authentication = new Authentication(
-			await new Authentification(session).send(challenge),
+			await new AuthentificationAPI(session).send(challenge),
 			identity.username ?? username,
 			deviceUUID,
 		);
@@ -72,17 +72,17 @@ export abstract class LoginPortal {
 
 		const session = new Session(instance, homepage, this._instance.base);
 
-		const parameters = new Parameters(await new FunctionParameters(session).send(navigatorIdentifier));
+		const parameters = new Parameters(await new FunctionParametersAPI(session).send(navigatorIdentifier));
 
 		const identity = new Identity(
-			await new Identification(session).send(username, deviceUUID, IdentificationMode.Token),
+			await new IdentificationAPI(session).send(username, deviceUUID, IdentificationMode.Token),
 		);
 
 		const key = identity.createMiddlewareKey(username, token);
 		const challenge = identity.solveChallenge(session, key);
 
 		const authentication = new Authentication(
-			await new Authentification(session).send(challenge),
+			await new AuthentificationAPI(session).send(challenge),
 			identity.username ?? username,
 			deviceUUID,
 		);
@@ -110,7 +110,7 @@ export abstract class LoginPortal {
 			if (token) login._authentication.token = token;
 		}
 
-		return new UserParameters(await new UserSetting(login._session).send());
+		return new UserParameters(await new UserSettingAPI(login._session).send());
 	}
 
 	/** @internal */

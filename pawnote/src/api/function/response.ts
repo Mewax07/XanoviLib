@@ -8,6 +8,7 @@ import { TypeHttpEnsembleCardinal } from "../http/TypeHttpEnsembleCardinal";
 import { EnsembleNombre, TypeHttpEnsembleNombre } from "../http/TypeHttpEnsembleNombre";
 import { TypeHttpNote } from "../http/TypeHttpNote";
 import { Collectivite } from "../models/collectivite";
+import { JoursFeries } from "../models/feries";
 import { Heure } from "../models/heure";
 import { Langue } from "../models/langue";
 import { MentionsPagesPubliques } from "../models/mentions_pages_publiques";
@@ -15,7 +16,6 @@ import { NiveauAcquisition } from "../models/niveau_acquisition";
 import { Periode } from "../models/periode";
 import { Police } from "../models/police";
 import { Recreation } from "../models/recreation";
-import { JoursFeries } from "../models/feries";
 
 export class General {
 	@rename("urlSiteIndexEducation")
@@ -302,7 +302,7 @@ export class General {
 	public maxCommentLength = t.array(t.number());
 
 	@deserializeWith(new TypeHttpElement(JoursFeries).array)
-	public listeJoursFeries = t.array(t.reference(JoursFeries));
+	public listHolidays = t.array(t.reference(JoursFeries));
 
 	public afficherSequences = t.boolean();
 

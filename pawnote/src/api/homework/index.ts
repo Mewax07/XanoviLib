@@ -8,7 +8,7 @@ import { HomeworkModel } from "./response";
 
 export type HomeworkResponse = ResponseFunctionWrapper<HomeworkModel>;
 
-export class Homework extends RequestFunction<HomeworkRequest, HomeworkRequestSignature> {
+export class HomeworkAPI extends RequestFunction<HomeworkRequest, HomeworkRequestSignature> {
 	private static readonly name = "PageCahierDeTexte";
 
 	private readonly user: User;
@@ -18,7 +18,7 @@ export class Homework extends RequestFunction<HomeworkRequest, HomeworkRequestSi
 		user: User,
 		private readonly resource: Student | Child,
 	) {
-		super(user.session, Homework.name);
+		super(user.session, HomeworkAPI.name);
 		this.user = user;
 		this.decoder = new ResponseFunction(this.session, HomeworkModel);
 	}

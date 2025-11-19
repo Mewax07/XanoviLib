@@ -1,12 +1,12 @@
-import { Timetable as TimetableAPI } from "../../api/timetable";
-import { Homepage as HomepageAPI } from "../../api/homepage";
-import { Homework as HomeworkAPI } from "../../api/homework";
+import { HomepageAPI } from "../../api/homepage";
+import { HomeworkAPI } from "../../api/homework";
+import { TimetableAPI } from "../../api/timetable";
 import { Child } from "../user/parent";
 import { Student } from "../user/student";
 import { User } from "../user/user";
 import { Homepage } from "./Homepage";
-import { Timetable } from "./Timetable";
 import { Homework } from "./Homework";
+import { Timetable } from "./Timetable";
 
 export class StudentAdministration {
 	/** @internal */
@@ -21,22 +21,22 @@ export class StudentAdministration {
 	}
 
 	public async getHomepage(week?: number): Promise<Homepage> {
-		return new Homepage(await new HomepageAPI(this._user).send(week));
+		return new Homepage(this._user.parameters, await new HomepageAPI(this._user).send(week));
 	}
 
 	public async getTimetableFromIntervals(start: Date, end?: Date): Promise<Timetable> {
-		return new Timetable(await new TimetableAPI(this._user, this._resource).sendIntervals(start, end));
+		return new Timetable(this._user.parameters, await new TimetableAPI(this._user, this._resource).sendIntervals(start, end));
 	}
 
 	public async getTimetableFromWeek(week?: number): Promise<Timetable> {
-		return new Timetable(await new TimetableAPI(this._user, this._resource).sendWeekNumber(week));
+		return new Timetable(this._user.parameters, await new TimetableAPI(this._user, this._resource).sendWeekNumber(week));
 	}
 
 	public async getHomeworkFromIntervals(start?: number, end?: number): Promise<Homework> {
-		return new Homework(await new HomeworkAPI(this._user, this._resource).sendIntervals(start, end));
+		return new Homework(this._user.parameters, await new HomeworkAPI(this._user, this._resource).sendIntervals(start, end));
 	}
 
 	public async getHomeworkSinceDate(date?: Date): Promise<Homework> {
-		return new Homework(await new HomeworkAPI(this._user, this._resource).sendSinceDate(date));
+		return new Homework(this._user.parameters, await new HomeworkAPI(this._user, this._resource).sendSinceDate(date));
 	}
 }

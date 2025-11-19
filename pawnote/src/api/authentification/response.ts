@@ -10,7 +10,7 @@ export class AuthentificationModel {
 	public access = t.option(t.number());
 
 	@rename("libelleUtil")
-	public label = t.string();
+	public labelUtil = t.string();
 
 	@rename("modeSecurisationParDefaut")
 	public defaultSecurityMode = t.enum(TypeModeGestionDoubleAuthentification);

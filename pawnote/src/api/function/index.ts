@@ -9,13 +9,13 @@ import { FunctionParametersModel, FunctionParametersSignature } from "./response
 
 export type FunctionParametersResponse = ResponseFunctionWrapper<FunctionParametersModel, FunctionParametersSignature>;
 
-export class FunctionParameters extends RequestFunction<FonctionParametresRequest> {
+export class FunctionParametersAPI extends RequestFunction<FonctionParametresRequest> {
 	private static readonly name = "FonctionParametres";
 
 	private readonly decoder = new ResponseFunction(this.session, FunctionParametersModel, FunctionParametersSignature);
 
 	public constructor(session: Session) {
-		super(session, FunctionParameters.name);
+		super(session, FunctionParametersAPI.name);
 	}
 
 	private readonly iv = randomBytes(16);
