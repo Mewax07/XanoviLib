@@ -1,5 +1,5 @@
+import { HomeworkAPI } from "~p0/api/homework";
 import { HomepageAPI } from "../../api/homepage";
-import { HomeworkAPI } from "../../api/homework";
 import { TimetableAPI } from "../../api/timetable";
 import { Child } from "../user/parent";
 import { Student } from "../user/student";
@@ -25,18 +25,30 @@ export class StudentAdministration {
 	}
 
 	public async getTimetableFromIntervals(start: Date, end?: Date): Promise<Timetable> {
-		return new Timetable(this._user.parameters, await new TimetableAPI(this._user, this._resource).sendIntervals(start, end));
+		return new Timetable(
+			this._user.parameters,
+			await new TimetableAPI(this._user, this._resource).sendIntervals(start, end),
+		);
 	}
 
 	public async getTimetableFromWeek(week?: number): Promise<Timetable> {
-		return new Timetable(this._user.parameters, await new TimetableAPI(this._user, this._resource).sendWeekNumber(week));
+		return new Timetable(
+			this._user.parameters,
+			await new TimetableAPI(this._user, this._resource).sendWeekNumber(week),
+		);
 	}
 
 	public async getHomeworkFromIntervals(start?: number, end?: number): Promise<Homework> {
-		return new Homework(this._user.parameters, await new HomeworkAPI(this._user, this._resource).sendIntervals(start, end));
+		return new Homework(
+			this._user.parameters,
+			await new HomeworkAPI(this._user, this._resource).sendIntervals(start, end),
+		);
 	}
 
 	public async getHomeworkSinceDate(date?: Date): Promise<Homework> {
-		return new Homework(this._user.parameters, await new HomeworkAPI(this._user, this._resource).sendSinceDate(date));
+		return new Homework(
+			this._user.parameters,
+			await new HomeworkAPI(this._user, this._resource).sendSinceDate(date),
+		);
 	}
 }

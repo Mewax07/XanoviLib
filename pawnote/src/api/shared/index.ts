@@ -9,6 +9,11 @@ export class Id {
 	public id = t.string();
 }
 
+export class Label extends Id {
+	@rename("L")
+	public label = t.string();
+}
+
 export class Content {
 	@rename("N")
 	public id = t.option(t.string());
@@ -27,8 +32,12 @@ export class Content {
 }
 
 export class CategoryOrigin {
+	@rename("N")
+	public id = t.option(t.string());
+
 	@rename("G")
 	public kind = t.enum(TypeOrigineCreationCategorieCahierDeTexte);
+
 	@rename("L")
 	public label = t.string();
 
@@ -200,11 +209,11 @@ export class Recess {
 }
 
 export class LunchIcon {
-	@rename("text")
 	public text = t.string();
 
-	@rename("check")
-	public check = t.boolean();
+	public check = t.option(t.boolean());
+
+	public delete = t.option(t.boolean());
 }
 
 export class LunchPeriod {
