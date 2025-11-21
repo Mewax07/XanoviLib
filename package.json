@@ -3,18 +3,13 @@
 	"description": "Xanovi est une application moderne Node.js qui centralise les librairies de Literate. Elle ajoute également d'autres fonctionnalités peu utilisées mais présentes sur les différentes plateformes",
 	"authors": "Mewax07",
 	"version": "1.0.0",
-	"main": "./dist/index.js",
+	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
-		"import": {
-			"types": "./dist/index.d.mts",
-			"default": "./dist/index.mjs"
-		},
-		"require": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
-		}
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.cjs",
+		"default": "./dist/index.mjs"
 	},
 	"workspaces": [
 		"pawnote",
@@ -22,7 +17,6 @@
 	],
 	"scripts": {
 		"build": "bunup",
-
 		"e:instance": "bun run ./examples/instance.ts -- --p:dev2",
 		"e:p:auth": "bun run ./examples/parents/auth.ts -- --p:dev2",
 		"e:p:children": "bun run ./examples/parents/children.ts -- --p:dev2",
@@ -46,6 +40,18 @@
 		"typescript": "5.9.2"
 	},
 	"dependencies": {
-		"bunup": "^0.15.14"
+		"bunup": "0.16.10",
+		"@noble/ciphers": "2.0.1",
+		"@noble/hashes": "2.0.1",
+		"@scure/base": "2.0.0",
+		"fflate": "0.8.2",
+		"micro-rsa-dsa-dh": "0.2.3",
+		"undici": "^7.16.0"
+	},
+	"optionalDependencies": {
+		"@tauri-apps/plugin-http": "^2.5.2",
+		"cheerio": "^1.1.2",
+		"fast-xml-parser": "^5.2.5",
+		"react-native-real-fetch": "^0.1.3"
 	}
 }

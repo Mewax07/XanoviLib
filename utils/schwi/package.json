@@ -43,19 +43,5 @@
 				"default": "./dist/index.node.js"
 			}
 		}
-	},
-	"scripts": {
-		"build": "bun build src/index.ts --outdir dist",
-		"dev": "bun --watch src/index.ts",
-		"start": "bun run src/index.ts"
-	},
-	"dependencies": {
-		"undici": "^7.16.0"
-	},
-	"optionalDependencies": {
-		"@tauri-apps/plugin-http": "^2.5.2",
-		"cheerio": "^1.1.2",
-		"fast-xml-parser": "^5.2.5",
-		"react-native-real-fetch": "^0.1.3"
 	}
 }

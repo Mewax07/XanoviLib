@@ -1,17 +1,5 @@
 {
 	"name": "pawnote_2025_rewrite",
 	"version": "1.0.0",
-	"main": "src/index.ts",
-	"scripts": {
-		"build": "bun build src/index.ts --outdir dist",
-		"dev": "bun --watch src/index.ts",
-		"start": "bun run src/index.ts"
-	},
-	"dependencies": {
-		"@noble/ciphers": "^2.0.1",
-		"@noble/hashes": "^2.0.1",
-		"@scure/base": "^2.0.0",
-		"fflate": "^0.8.2",
-		"micro-rsa-dsa-dh": "^0.2.3"
-	}
+	"main": "src/index.ts"
 }

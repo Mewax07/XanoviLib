@@ -9,5 +9,4 @@ export default defineConfig({
 	outDir: "dist",
 	splitting: false,
 	sourcemap: "none",
-	external: ["@noble/ciphers"],
 });
