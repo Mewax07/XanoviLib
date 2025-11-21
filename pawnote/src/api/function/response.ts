@@ -301,6 +301,7 @@ export class General {
 	@rename("TailleMaxAppreciation")
 	public maxCommentLength = t.array(t.number());
 
+	@rename("listeJoursFeries")
 	@deserializeWith(new TypeHttpElement(JoursFeries).array)
 	public listHolidays = t.array(t.reference(JoursFeries));
 

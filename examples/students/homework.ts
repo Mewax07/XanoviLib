@@ -7,7 +7,6 @@ async function main() {
 	const admin = student.administration;
 
 	const homepage = await admin.getHomeworkFromIntervals(40, 52);
-	console.log("test", homepage.homework[homepage.homework.length - 1]);
 }
 
 main().catch(console.error);

@@ -1,62 +1,40 @@
-import { Child, Student, User } from "../../models";
-import { RequestFunction } from "../../models/request";
-import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
-import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
-import { TypeHttpDomaine } from "../http/TypeHttpDomaine";
-import { HomeworkRequest, HomeworkRequestSignature, RequestDataDate, RequestDataIntervals } from "./request";
-import { HomeworkModel } from "./response";
+import { Child, Student, User } from "~p0/models";
+import { Homework_89_Content_API, HomeworkResponse as HomeworkResponse_Content } from "./content_and_resource/content";
+import { Homework_88_API, HomeworkResponse as HomeworkResponse_ToDoList } from "./to_do_list";
 
-export type HomeworkResponse = ResponseFunctionWrapper<HomeworkModel>;
+export type HomeworkResponse = {
+	toDoList: HomeworkResponse_ToDoList;
+	content: HomeworkResponse_Content;
+};
 
-export class HomeworkAPI extends RequestFunction<HomeworkRequest, HomeworkRequestSignature> {
-	private static readonly name = "PageCahierDeTexte";
-
-	private readonly user: User;
-	private readonly decoder: ResponseFunction<any, any>;
-
+export class HomeworkAPI {
 	constructor(
-		user: User,
+		private readonly user: User,
 		private readonly resource: Student | Child,
-	) {
-		super(user.session, HomeworkAPI.name);
-		this.user = user;
-		this.decoder = new ResponseFunction(this.session, HomeworkModel);
-	}
+	) {}
 
-	public async send(data: RequestDataIntervals | RequestDataDate): Promise<HomeworkResponse> {
-		const response = await this.execute(
-			{
-				...data,
-			},
-			{
-				onglet: 88,
-				membre:
-					this.resource instanceof Child
-						? {
-								G: this.resource.kind,
-								N: this.resource.id,
-							}
-						: void 0,
-			},
+	public async sendIntervals(startDate?: number, endDate?: number): Promise<HomeworkResponse> {
+		const homework_to_do_list = await new Homework_88_API(this.user, this.resource).sendIntervals(
+			startDate,
+			endDate,
+		);
+		const homework_content = await new Homework_89_Content_API(this.user, this.resource).sendIntervals(
+			startDate,
+			endDate,
 		);
 
-		return this.decoder.decode(response);
+		return {
+			toDoList: homework_to_do_list,
+			content: homework_content,
+		};
 	}
 
-	public sendIntervals(startWeek?: number, endWeek?: number): Promise<HomeworkResponse> {
-		const domaine = new TypeHttpDomaine(`[${startWeek ?? 1}..${endWeek ?? 52}]`).serialize();
+	public async sendSinceDate(date?: Date): Promise<HomeworkResponse> {
+		const homework_to_do_list = await new Homework_88_API(this.user, this.resource).sendSinceDate(date);
 
-		return this.send({
-			domaine,
-		});
-	}
-
-	public sendSinceDate(date?: Date): Promise<HomeworkResponse> {
-		const n = date ? date : new Date();
-		const serializer = TypeHttpDateTime.serializer(n);
-
-		return this.send({
-			date: serializer,
-		});
+		return {
+			toDoList: homework_to_do_list,
+			content: undefined as any,
+		};
 	}
 }

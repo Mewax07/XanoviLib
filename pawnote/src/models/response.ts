@@ -72,12 +72,6 @@ export class ResponseFunction<
 				throw new ServerSideError(data[this.session.api.properties.signature].MessageErreur);
 			}
 
-			// if (content.includes("ListeTravauxAFaire")) {
-			// 	console.log(util.inspect(json, false, 10));
-			// 	console.log(util.inspect(this.DataModel, false, 10));
-			// 	console.log("test", util.inspect(data[this.session.api.properties.data], false, 10));
-			// }
-
 			return {
 				data: deserialize(this.DataModel, data[this.session.api.properties.data]),
 				signature:

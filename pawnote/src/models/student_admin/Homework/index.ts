@@ -1,5 +1,5 @@
 import { HomeworkResponse } from "~p0/api/homework";
-import { _Homework } from "~p0/api/homework/response";
+import { _Homework } from "~p0/api/homework/to_do_list/response";
 import { Parameters } from "~p0/models/params";
 
 export class Homework {
@@ -7,8 +7,4 @@ export class Homework {
 		private parameters: Parameters,
 		private _raw: HomeworkResponse,
 	) {}
-
-	public get homework(): _Homework[] {
-		return this._raw.data.toDoList;
-	}
 }

@@ -1,5 +1,5 @@
-import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
-import { Domaine } from "../http/TypeHttpDomaine";
+import { TypeHttpDateTime } from "../../http/TypeHttpDateTime";
+import { Domaine } from "../../http/TypeHttpDomaine";
 
 export type HomeworkRequest = RequestDataIntervals | RequestDataDate;
 
