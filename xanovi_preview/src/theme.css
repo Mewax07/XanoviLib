@@ -1,0 +1,14 @@
+:root,
+body[data-theme="default"],
+body[data-theme="dark"] {
+	--_-bg_c: #0e0e0e;
+	--_-bg_c_h: #242424dd;
+	--_-ws_c: #0a0a0a;
+	--_-ws_b_c: #151515;
+	--_-c: #e9e9e9;
+	--_-c-t: #707070;
+	--_-card-bg: #0d0d0d;
+	--_-p_c: #2a947c;
+	--_-sh-c: rgba(0, 0, 0, 0.1);
+	--_-tr-spd: 0.3s ease-in-out;
+}
