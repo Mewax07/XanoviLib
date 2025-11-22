@@ -1,5 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useConfig } from "../Config";
+import { useConfig } from "../../context/Config";
 
 const applyPositionClass = (position: "right" | "left", baseClass: string, rightClass?: string, leftClass?: string) => {
 	if (position === "right" && rightClass) return `${baseClass} ${rightClass}`;

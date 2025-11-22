@@ -328,6 +328,7 @@ export class Resources {
 	public studentClassesHistory = t.option(t.array(t.reference(Etablissement)));
 
 	@rename("avecPhoto")
+	@defaultValue(false)
 	public withProfilePicture = t.option(t.boolean());
 
 	@rename("estDelegue")

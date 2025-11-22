@@ -179,3 +179,10 @@ export class Timetable {
 		return false;
 	}
 }
+
+export * from "./LessonCategory";
+export * from "./Subject";
+export * from "./TimetableEntry";
+export * from "./TimetableEntryActivity";
+export * from "./TimetableEntryDetention";
+export * from "./TimetableEntryLesson";

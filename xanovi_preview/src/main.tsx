@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
 import App from ".";
-import { Config, ConfigProvider } from "./components/Config";
+import { Config, ConfigProvider } from "./context/Config";
+import { PronoteProvider } from "./context/Pronote";
 
 const config: Config = {
 	ui: {
@@ -16,6 +17,8 @@ const config: Config = {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<ConfigProvider config={config}>
-		<App />
+		<PronoteProvider>
+			<App />
+		</PronoteProvider>
 	</ConfigProvider>,
 );

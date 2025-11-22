@@ -52,3 +52,7 @@ export class StudentAdministration {
 		);
 	}
 }
+
+export * from "./Homepage";
+export * from "./Homework";
+export * from "./Timetable";

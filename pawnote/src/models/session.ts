@@ -5,7 +5,6 @@ import { PublicKey } from "micro-rsa-dsa-dh/rsa.js";
 import { AsyncQueue } from "~_maq/index";
 import { defaultValue, deserializeWith, rename, t } from "~d0/index";
 import { InstanceInformation } from "./instance";
-import { Parameters } from "./params";
 import { Version } from "./version";
 import { Webspace } from "./webspace";
 
