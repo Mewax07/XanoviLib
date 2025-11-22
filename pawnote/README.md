@@ -1,8 +1,8 @@
-# Pawnote.js
+# Pawnote
 
-Pawnote.js est une **bibliothèque pour interagir avec Pronote**, créée et maintenue par [LiterateInk](https://github.com/LiterateInk).
+Pawnote est une **bibliothèque pour interagir avec Pronote**, créée et maintenue par [LiterateInk](https://github.com/LiterateInk).
 
-Pronote est largement utilisé dans les écoles françaises, mais l'API fournie par Pawnote.js le rend accessible non seulement aux utilisateurs français, mais aussi aux **développeurs internationaux** (anglais, espagnol et autres langues supportées par Pronote).
+Pronote est largement utilisé dans les écoles françaises, mais l'API fournie par Pawnote le rend accessible non seulement aux utilisateurs français, mais aussi aux **développeurs internationaux** (anglais, espagnol et autres langues supportées par Pronote).
 
 ---
 
@@ -17,6 +17,6 @@ XanoviPack ne fait que s'appuyer sur ce travail remarquable.
 
 ## Preuve d'autorisation
 
-Nous avons reçu l'autorisation explicite de LiterateInk pour utiliser Pawnote.js dans ce projet.
+Nous avons reçu l'autorisation explicite de LiterateInk pour utiliser Pawnote dans ce projet.
 
 ![Preuve d'autorisation](./assets/proof_pawnote.png)

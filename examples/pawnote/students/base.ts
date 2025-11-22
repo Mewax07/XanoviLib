@@ -1,4 +1,4 @@
-import Xanovi from "../../src";
+import Xanovi from "../../../src";
 const { pronote: pawnote } = Xanovi;
 
 import fs from "node:fs/promises";

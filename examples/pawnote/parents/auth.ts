@@ -1,15 +1,12 @@
-import Xanovi from "../../src";
+import Xanovi from "../../../src";
 const { pronote: pawnote } = Xanovi;
 
-const instance = pawnote.Instance.fromURL("https://demo.index-education.net/pronote/eleve.html");
-const portal = new pawnote.StudentLoginPortal(instance);
+const instance = pawnote.Instance.fromURL("https://demo.index-education.net/pronote/parent.html");
+const portal = new pawnote.ParentLoginPortal(instance);
 const auth = await portal.credentials("demonstration", "pronotevs");
 
 console.info(`[*] authenticating to ${instance.base}...`);
 
-// On the first ever login, you might be asked to custom your password.
-// Also, administrators can reset your password and you will also be
-// asked to custom your password on the next login.
 if (auth.shouldCustomPassword) {
 	console.info("[*] you have to custom the password, make sure to respect the following rules.");
 	console.info("\t- max:", auth.password.max);
@@ -74,8 +71,9 @@ if (auth.shouldRegisterSource) {
 	}
 }
 
-const student = await portal.finish(auth);
+const parent = await portal.finish(auth);
 
 console.info("[*] congratulations, you're authenticated!");
-console.info("[*] username:", student.username);
-console.info("[*] token:", student.token);
+console.info("[*] username:", parent.username);
+console.info("[*] token:", parent.token);
+console.info("[*] uuid:", parent.uuid);

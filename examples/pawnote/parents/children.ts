@@ -1,4 +1,4 @@
-import Xanovi from "../../src";
+import Xanovi from "../../../src";
 const { pronote: pawnote } = Xanovi;
 
 const instance = pawnote.Instance.fromURL("https://demo.index-education.net/pronote/parent.html");

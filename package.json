@@ -13,17 +13,19 @@
 	},
 	"workspaces": [
 		"pawnote",
+		"meowdle",
 		"utils"
 	],
 	"scripts": {
 		"build": "bunup",
-		"e:instance": "bun run ./examples/instance.ts -- --p:dev2",
-		"e:p:auth": "bun run ./examples/parents/auth.ts -- --p:dev2",
-		"e:p:children": "bun run ./examples/parents/children.ts -- --p:dev2",
-		"e:s:auth": "bun run ./examples/students/auth.ts -- --p:dev2",
-		"e:s:homepage": "bun run ./examples/students/homepage.ts -- --p:dev2",
-		"e:s:homework": "bun run ./examples/students/homework.ts -- --p:dev1",
-		"e:s:timetable": "bun run ./examples/students/timetable.ts -- --p:dev2"
+
+		"e:instance": "bun run ./examples/pawnote/instance.ts -- --p:dev2",
+		"e:p:auth": "bun run ./examples/pawnote/parents/auth.ts -- --p:dev2",
+		"e:p:children": "bun run ./examples/pawnote/parents/children.ts -- --p:dev2",
+		"e:s:auth": "bun run ./examples/pawnote/students/auth.ts -- --p:dev2",
+		"e:s:homepage": "bun run ./examples/pawnote/students/homepage.ts -- --p:dev2",
+		"e:s:homework": "bun run ./examples/pawnote/students/homework.ts -- --p:dev1",
+		"e:s:timetable": "bun run ./examples/pawnote/students/timetable.ts -- --p:dev2"
 	},
 	"files": [
 		"dist"
