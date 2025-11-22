@@ -1,8 +1,6 @@
+import { HeaderKeys, HttpRequest, send } from "schwi";
 import { deserialize } from "~d0/deserialize";
 import { deserializeWith, rename, t, u } from "~d0/index";
-import { HeaderKeys } from "~s0/headers";
-import { send } from "~s0/index.bun";
-import { HttpRequest } from "~s0/request";
 import { UA } from "../core/user-agent";
 import { Version } from "./version";
 import { Webspace } from "./webspace";

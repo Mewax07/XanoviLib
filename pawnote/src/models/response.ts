@@ -1,6 +1,6 @@
 import { bytesToUtf8, hexToBytes } from "@noble/ciphers/utils.js";
 import { deserialize } from "~d0/index";
-import { HttpResponse } from "~s0/response";
+import { HttpResponse } from "schwi";
 import { getConfig } from "~t0/index";
 import { inflate } from "../core/inflate";
 import {

@@ -1,5 +1,5 @@
 import { bytesToHex, utf8ToBytes } from "@noble/ciphers/utils.js";
-import { HeaderKeys, HttpRequest, HttpRequestMethod, HttpResponse, send } from "~s0/index.bun";
+import { HeaderKeys, HttpRequest, HttpRequestMethod, HttpResponse, send } from "schwi";
 import { getConfig, WhoCallMe } from "../../../utils/uwtil/src/index";
 import { UA } from "../core";
 import { deflate } from "../core/deflate";

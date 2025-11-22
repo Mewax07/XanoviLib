@@ -1,5 +1,5 @@
 import { deserialize } from "~d0/deserialize";
-import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "~s0/index.bun";
+import { HeaderKeys, HttpRequest, HttpRequestRedirection, send } from "schwi";
 import { AccountSecurityDoubleAuth } from "../../api/account_security";
 import { AuthentificationAPI } from "../../api/authentification";
 import { FunctionParametersAPI } from "../../api/function";
