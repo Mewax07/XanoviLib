@@ -1,6 +1,7 @@
 # Xanovi
 
 Xanovi. Une application moderne utilisant des librairies personnalisée basée sur les différentes libraires de [Literate](https://github.com/LiterateInk/).
+À compter du 22 novembre 2025, XanoviLib offre une preview de l'application finale Xanovi. Pour plus d'informations sur le sujet, consultez le dossier `xanovi_preview`.
 
 ## Crédits
 
@@ -35,6 +36,12 @@ Pour rendre le code lisible automatiquement et générer les liens
 bun run parse
 ```
 
+Xanovi Preview
+
+```bash
+cd ./xanovi_preview && bun i && bun run tauri dev
+```
+
 ---
 
 ## Utilisation
@@ -42,6 +49,7 @@ bun run parse
 Basé sur le code de Vexited :
 
 - Projet Pawnote (réécriture basé sur [Pawnote r2.0](https://github.com/LiterateInk/Pawnote.js/tree/rewrite-2.0/src-new))
+- Projet Meowdle (pas pour le moment, mais c'est prévu)
 
 ---
 
