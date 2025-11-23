@@ -8,6 +8,8 @@ async function main() {
 
 	const homepage = await admin.getHomeworkSinceDate(new Date());
 	console.log(homepage._raw.content.data.homeworkList[0]);
+	console.log(homepage._raw.resource.data.listOfContents[0]);
+	console.log(homepage._raw.resource.data.listResources[0]);
 }
 
 main().catch(console.error);
