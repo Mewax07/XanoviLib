@@ -6,7 +6,8 @@ async function main() {
 
 	const admin = student.administration;
 
-	const homepage = await admin.getHomeworkFromIntervals(40, 52);
+	const homepage = await admin.getHomeworkSinceDate(new Date());
+	console.log(homepage._raw.content.data.homeworkList[0]);
 }
 
 main().catch(console.error);

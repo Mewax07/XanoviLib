@@ -7,8 +7,13 @@ export const usePronoteConnected = () => {
 	return useMemo(() => {
 		if (!admin) return null;
 
+		// TODO: Show if timetable send good date.
+		const now = new Date();
+		const week = new Date();
+		week.setDate(now.getDate() + 7);
+
 		const homepage = async () => admin.getHomepage();
-		const timetable = async () => admin.getTimetableFromWeek(0);
+		const timetable = async () => admin.getTimetableFromIntervals(now, week);
 
 		return { homepage, timetable };
 	}, [admin]);

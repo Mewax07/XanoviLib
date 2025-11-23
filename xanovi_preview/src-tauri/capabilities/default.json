@@ -8,13 +8,35 @@
 		"opener:default",
 		"core:window:default",
 		"core:window:allow-minimize",
+		"core:window:allow-maximize",
 		"core:window:allow-toggle-maximize",
 		"core:window:allow-close",
 		"core:window:allow-start-dragging",
+		"core:window:allow-set-size",
+		"core:window:allow-set-position",
 		"http:default",
 		{
 			"identifier": "http:default",
-			"allow": [{ "url": "https://*.index-education.net/*" }]
+			"allow": [
+				{
+					"url": "https://*.index-education.net/*"
+				}
+			]
+		},
+		"fs:default",
+		"fs:allow-open",
+		"fs:allow-create",
+		"fs:allow-write",
+		"fs:allow-exists",
+		"fs:scope-download-recursive",
+		"fs:scope-resource-recursive",
+		"fs:allow-applocaldata-write",
+		"fs:allow-applocaldata-write-recursive",
+		"fs:allow-applocaldata-read",
+		"fs:allow-applocaldata-read-recursive",
+		{
+			"identifier": "fs:allow-applocaldata-write",
+			"allow": [{ "path": "$APP_LOCAL_DATA/org.mewaxdev.xanovi_preview/*" }]
 		}
 	]
 }

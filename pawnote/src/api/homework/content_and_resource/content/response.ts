@@ -4,17 +4,23 @@ import { TypeHttpElement } from "../../../http/TypeHttpElement";
 import { CategoryOrigin, HomeworkContentSubject, Id, Label } from "../../../shared";
 
 export class Content extends Label {
+	/*
 	@rename("ListePieceJointe")
 	@deserializeWith(new TypeHttpElement(Id).single)
 	public unk_ListePieceJointe = t.option(t.array(t.reference(Id))); // Unkown ListePieceJointe array result
+	*/
 
+	/*
 	@rename("ListeThemes")
 	@deserializeWith(new TypeHttpElement(Id).single)
 	public unk_ListeThemes = t.option(t.array(t.reference(Id))); // Unkown ListeThemes array result
+	*/
 
+	/*
 	@rename("categorie")
 	@deserializeWith(new TypeHttpElement(CategoryOrigin).single)
 	public category = t.option(t.array(t.reference(CategoryOrigin)));
+	*/
 
 	// @rename("descriptif")
 
@@ -44,14 +50,14 @@ export class _Homework extends Id {
 
 	@rename("dateTAF")
 	@deserializeWith(TypeHttpDateTime.deserializer)
-	public dueDate = t.instance(Date);
+	public dueDate = t.option(t.instance(Date));
 
 	@rename("listeContenus")
-	@deserializeWith(new TypeHttpElement(Content).single)
+	@deserializeWith(new TypeHttpElement(Content).array)
 	public contentList = t.option(t.array(t.reference(Content)));
 
 	@rename("listeProfesseurs")
-	@deserializeWith(new TypeHttpElement(Label).single)
+	@deserializeWith(new TypeHttpElement(Label).array)
 	public teacherList = t.array(t.reference(Label));
 
 	@rename("verouille")
@@ -59,7 +65,7 @@ export class _Homework extends Id {
 }
 
 export class HomeworkModel {
-	@rename("ListeTravauxAFaire")
+	@rename("ListeCahierDeTextes")
 	@deserializeWith(new TypeHttpElement(_Homework).array)
 	public homeworkList = t.array(t.reference(_Homework));
 }

@@ -13,6 +13,8 @@ export class Session {
 	public readonly aes: SessionAES;
 	public readonly api: SessionAPI;
 
+	public presence: any;
+
 	public constructor(
 		public readonly instance: InstanceInformation,
 		public readonly homepage: HomepageSession,
@@ -21,6 +23,8 @@ export class Session {
 		this.rsa = new SessionRSA(homepage);
 		this.aes = new SessionAES();
 		this.api = new SessionAPI(homepage, instance.version);
+
+		this.presence = null;
 	}
 }
 

@@ -31,10 +31,13 @@ export class HomeworkAPI {
 
 	public async sendSinceDate(date?: Date): Promise<HomeworkResponse> {
 		const homework_to_do_list = await new Homework_88_API(this.user, this.resource).sendSinceDate(date);
+		const homework_content = await new Homework_89_Content_API(this.user, this.resource).sendSinceDate(
+			date
+		);
 
 		return {
 			toDoList: homework_to_do_list,
-			content: undefined as any,
+			content: homework_content,
 		};
 	}
 }

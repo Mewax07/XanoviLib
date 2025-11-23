@@ -1,3 +1,4 @@
+import { getSchoolWeekNumber } from "~p0/core/week";
 import { Child, Student, User } from "../../../../models";
 import { RequestFunction } from "../../../../models/request";
 import { ResponseFunction, ResponseFunctionWrapper } from "../../../../models/response";
@@ -44,6 +45,24 @@ export class Homework_89_Content_API extends RequestFunction<HomeworkRequest, Ho
 
 	public sendIntervals(startWeek?: number, endWeek?: number): Promise<HomeworkResponse> {
 		const domaine = new TypeHttpDomaine(`[${startWeek ?? 1}..${endWeek ?? 52}]`).serialize();
+
+		return this.send({
+			domaine,
+			sansRequeteRP: true,
+		});
+	}
+
+	public sendSinceDate(date?: Date) {
+		const weekNumber = getSchoolWeekNumber({
+			firstMonday: this.user.parameters.firstMonday,
+			weekFrequencies: this.user.parameters.weekFrequencies,
+			firstDate: this.user.parameters.firstDate,
+			lastDate: this.user.parameters.lastDate,
+			periods: this.user.parameters.periods,
+			date,
+		});
+
+		const domaine = new TypeHttpDomaine(`[${weekNumber ?? 1}]`).serialize();
 
 		return this.send({
 			domaine,

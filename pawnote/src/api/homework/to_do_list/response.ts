@@ -1,7 +1,35 @@
 import { deserializeWith, rename, t } from "~d0/index";
-import { TypeHttpElement } from "../../http/TypeHttpElement";
-import { HomeworkBase, HomeworkContentSubject, Id } from "../../shared";
 import { TypeHttpDateTime } from "../../http/TypeHttpDateTime";
+import { TypeHttpElement } from "../../http/TypeHttpElement";
+import { HomeworkContentSubject, Id } from "../../shared";
+import { AttachmentDifficulty, AttachmentReturnKind } from "~p0/api/models/attachment";
+
+export class HomeworkBase {
+	@rename("N")
+	public id = t.string();
+
+	@rename("duree")
+	public duringTime = t.number();
+
+	@rename("CouleurFond")
+	public backgroundColor = t.string();
+
+	@rename("peuRendre")
+	public canComplete = t.option(t.boolean());
+
+	@rename("avecRendu")
+	public withReturn = t.option(t.boolean());
+
+	@rename("TAFFait")
+	public done = t.boolean();
+
+	@rename("genreRendu")
+	public returnType = t.option(t.enum(AttachmentReturnKind));
+
+	@rename("niveauDifficulte")
+	public difficultyLevel = t.option(t.enum(AttachmentDifficulty));
+}
+
 
 export class _Homework extends HomeworkBase {
 	@rename("nomPublic")

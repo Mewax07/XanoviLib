@@ -2,7 +2,8 @@ import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpDateTime } from "../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../http/TypeHttpElement";
 import { TypeHttpNote } from "../http/TypeHttpNote";
-import { Absences, Actualities, AgendaList, Content, Course, HomeworkBase, HomeworkContentSubject, Id, Recess } from "../shared";
+import { AttachmentDifficulty, AttachmentReturnKind } from "../models/attachment";
+import { Absences, Actualities, AgendaList, Content, Course, HomeworkContentSubject, Id, Recess } from "../shared";
 
 export class Service {
 	@rename("L")
@@ -96,6 +97,32 @@ export class Notes {
 	@rename("listeDevoirs")
 	@deserializeWith(new TypeHttpElement(Note).array)
 	public listAssignments = t.array(t.reference(Note));
+}
+
+export class HomeworkBase {
+	@rename("N")
+	public id = t.string();
+
+	@rename("duree")
+	public duringTime = t.number();
+
+	@rename("CouleurFond")
+	public backgroundColor = t.string();
+
+	@rename("peuRendre")
+	public canComplete = t.option(t.boolean());
+
+	@rename("avecRendu")
+	public withReturn = t.option(t.boolean());
+
+	@rename("TAFFait")
+	public done = t.boolean();
+
+	@rename("genreRendu")
+	public returnType = t.option(t.enum(AttachmentReturnKind));
+
+	@rename("niveauDifficulte")
+	public difficultyLevel = t.option(t.enum(AttachmentDifficulty));
 }
 
 export class HomeworkContent extends HomeworkBase {

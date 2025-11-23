@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./index.css";
+import "./css/index.css";
 
 import { usePronoteAuth } from "./api/auth";
 import Navbar from "./components/Navbar";
@@ -16,6 +16,7 @@ function App() {
 		setLoading(true);
 		try {
 			const student = await authStudent(new URL("https://demo.index-education.net/pronote/eleve.html"));
+			student.administration.startPresenceInterval();
 			console.log("Connection success:", student?.name);
 		} catch (err) {
 			console.error("Error while login :", err);

@@ -1,4 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { BaseDirectory, create, writeTextFile } from "@tauri-apps/plugin-fs";
 import { useConfig } from "../../context/Config";
 
 const applyPositionClass = (position: "right" | "left", baseClass: string, rightClass?: string, leftClass?: string) => {
@@ -7,12 +8,33 @@ const applyPositionClass = (position: "right" | "left", baseClass: string, right
 	return baseClass;
 };
 
+export async function saveWindowState() {
+	const appWindow = getCurrentWindow();
+	const size = await appWindow.innerSize();
+	const position = await appWindow.outerPosition();
+	const isMaximized = await appWindow.isMaximized();
+
+	const state = {
+		width: size.width,
+		height: size.height,
+		x: position.x,
+		y: position.y,
+		isMaximized,
+	};
+
+	await create("window-state.json", { baseDir: BaseDirectory.AppLocalData });
+	await writeTextFile("window-state.json", JSON.stringify(state), { baseDir: BaseDirectory.AppLocalData });
+}
+
 export const Navbar = () => {
 	const config = useConfig();
 	const appWindow = getCurrentWindow();
 
 	const containerClass = applyPositionClass(config.ui.navbar.position, "container", "end", "");
 	const logoClass = applyPositionClass(config.ui.navbar.position, "logo", "", "end");
+
+	appWindow.onResized(saveWindowState);
+	appWindow.onMoved(saveWindowState);
 
 	return (
 		<section data-tauri-drag-region className="navbar">

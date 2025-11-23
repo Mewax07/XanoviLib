@@ -292,16 +292,6 @@ declare class HomeworkContentSubject {
 	labal: string;
 	id: string;
 }
-declare class HomeworkBase {
-	id: string;
-	duringTime: number;
-	backgroundColor: string;
-	canComplete: boolean | null;
-	withReturn: boolean | null;
-	done: boolean;
-	returnType: AttachmentReturnKind | null;
-	difficultyLevel: AttachmentDifficulty | null;
-}
 declare class Service {
 	label: string;
 	id: string;
@@ -326,6 +316,16 @@ declare class Notes {
 	withDetailAssignment: boolean;
 	withDetailService: boolean | null;
 	listAssignments: Note2[];
+}
+declare class HomeworkBase {
+	id: string;
+	duringTime: number;
+	backgroundColor: string;
+	canComplete: boolean | null;
+	withReturn: boolean | null;
+	done: boolean;
+	returnType: AttachmentReturnKind | null;
+	difficultyLevel: AttachmentDifficulty | null;
 }
 declare class HomeworkContent extends HomeworkBase {
 	kind: number;
@@ -415,6 +415,7 @@ declare class Session {
 	readonly rsa: SessionRSA;
 	readonly aes: SessionAES;
 	readonly api: SessionAPI;
+	presence: any;
 	constructor(instance: InstanceInformation, homepage: HomepageSession, url: string);
 }
 declare class SessionRSA {
@@ -547,7 +548,17 @@ declare class HomeworkModel {
 	homeworkList: _Homework[];
 }
 type HomeworkResponse = ResponseFunctionWrapper<HomeworkModel>;
-declare class _Homework2 extends HomeworkBase {
+declare class HomeworkBase2 {
+	id: string;
+	duringTime: number;
+	backgroundColor: string;
+	canComplete: boolean | null;
+	withReturn: boolean | null;
+	done: boolean;
+	returnType: AttachmentReturnKind | null;
+	difficultyLevel: AttachmentDifficulty | null;
+}
+declare class _Homework2 extends HomeworkBase2 {
 	publicName: string | null;
 	themeLabel: string | null;
 	withFormat: boolean;
@@ -655,6 +666,8 @@ declare class StudentAdministration2 {
 	getTimetableFromWeek(week?: number): Promise<Timetable>;
 	getHomeworkFromIntervals(start?: number, end?: number): Promise<Homework2>;
 	getHomeworkSinceDate(date?: Date): Promise<Homework2>;
+	startPresenceInterval: (interval?: number) => void;
+	clearPresenceInterval: () => void;
 }
 declare abstract class User {
 	get username(): string;

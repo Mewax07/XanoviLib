@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { usePronoteConnected } from "../../../api/homepage";
+import { loadSchedule, saveSchedule } from "../../../cache/scheduleCache";
 import Xanovi from "../../../lib/xanovi_lib";
 import { hexToHSL } from "../../../utils/color";
 const pawnote = Xanovi.pronote;
+
+const ONE_HOUR = 60 * 60 * 100;
 
 interface Course {
 	startDate: Date;
@@ -122,49 +125,79 @@ export const Schedule = () => {
 	useEffect(() => {
 		if (!pronote) return;
 
-		const fetchData = async () => {
-			try {
-				const timetableInfo = await pronote.timetable();
+		const processData = (timetableInfo: any) => {
+			const grouped: Record<string, Course[]> = {};
 
-				const grouped: Record<string, Course[]> = {};
+			for (const entry of timetableInfo.entries) {
+				const day = new Date(entry.startDate).toLocaleDateString("fr-FR", {
+					weekday: "long",
+				});
 
-				for (const entry of timetableInfo.entries) {
-					const day = new Date(entry.startDate).toLocaleDateString("fr-FR", {
-						weekday: "long",
+				if (!grouped[day]) grouped[day] = [];
+
+				if (entry instanceof pawnote.TimetableEntryLesson) {
+					grouped[day].push({
+						startDate: entry.startDate,
+						endDate: entry.endDate,
+						classrooms: entry.rooms,
+						subject: {
+							name: entry.subject!.name,
+							id: entry.subject!.id,
+							canceled: entry.canceled,
+							test: entry.test,
+						},
+						teacherNames: entry.teachers,
+						backgroundColor: entry.backgroundColor!,
+						status: entry.status!,
 					});
-
-					if (!grouped[day]) grouped[day] = [];
-
-					if (entry instanceof pawnote.TimetableEntryLesson) {
-						grouped[day].push({
-							startDate: entry.startDate,
-							endDate: entry.endDate,
-							classrooms: entry.rooms,
-							subject: {
-								name: entry.subject!.name,
-								id: entry.subject!.id,
-								canceled: entry.canceled,
-								test: entry.test,
-							},
-							teacherNames: entry.teachers,
-							backgroundColor: entry.backgroundColor!,
-							status: entry.status!,
-						});
-					}
 				}
+			}
 
-				for (const day in grouped) {
-					grouped[day] = removeDucplicateCourses(grouped[day]);
-					grouped[day].sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
-				}
+			for (const day in grouped) {
+				grouped[day] = removeDucplicateCourses(grouped[day]);
+				grouped[day].sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+			}
+
+			return grouped;
+		};
+
+		const loadData = async () => {
+			const cache = await loadSchedule<Record<string, Course[]>>();
+
+			const hasInternet = navigator.onLine;
+
+			if (cache && Date.now() - cache.savedAt < ONE_HOUR) {
+				console.log("Using cached schedule");
+				setDays(cache.data);
+				return;
+			}
+
+			if (!hasInternet && cache) {
+				console.log("No internet → using old cache");
+				setDays(cache.data);
+				return;
+			}
+
+			try {
+				console.log("Fetching new timetable…");
+				const timetableInfo = await pronote.timetable();
+				console.log(timetableInfo);
+
+				const grouped = processData(timetableInfo);
 
 				setDays(grouped);
+				await saveSchedule(grouped);
 			} catch (err) {
-				console.error("Erreur Timetable:", err);
+				console.error("Fetch error:", err);
+
+				if (cache) {
+					console.log("Falling back to cache...");
+					setDays(cache.data);
+				}
 			}
 		};
 
-		fetchData();
+		loadData();
 	}, [pronote]);
 
 	return (
@@ -174,11 +207,19 @@ export const Schedule = () => {
 			<div className="carousel" ref={carouselRef}>
 				{Object.keys(days).map((day) => {
 					const courses = days[day];
+					if (!courses.length) return null;
 					let lastEnd: Date | null = null;
+
+					const firstCourse = courses[0];
+					const dateObj = new Date(firstCourse.startDate);
+					const dayNumber = dateObj.getDate();
+					const monthShort = dateObj.toLocaleDateString("fr-FR", { month: "short" });
+
+					const dayDisplay = `${day.charAt(0).toUpperCase() + day.slice(1)} ${dayNumber} ${monthShort}`;
 
 					return (
 						<div className="schedule-day content" key={day}>
-							<p className="title">Cours du {day}</p>
+							<p className="title">Cours du {dayDisplay}</p>
 
 							{courses.length === 0 && <p className="no-class">Aucun cours.</p>}
 
@@ -202,8 +243,8 @@ export const Schedule = () => {
 											className="content no-class"
 											style={
 												{
-													"--_-bf-light": "80%",
-													"--_-bf-opacity": "0.5",
+													"--_-accent": "0",
+													"--_-light": "0%",
 												} as any
 											}
 										>
@@ -296,7 +337,8 @@ export const Schedule = () => {
 												</div>
 												<div className="status">
 													{course.status && (
-														<p className="change"
+														<p
+															className="change"
 															style={
 																{
 																	"--_-accent": accent,

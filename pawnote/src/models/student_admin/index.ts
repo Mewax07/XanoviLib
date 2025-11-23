@@ -1,4 +1,5 @@
 import { HomeworkAPI } from "~p0/api/homework";
+import { Presence } from "~p0/api/presence";
 import { HomepageAPI } from "../../api/homepage";
 import { TimetableAPI } from "../../api/timetable";
 import { Child } from "../user/parent";
@@ -51,6 +52,18 @@ export class StudentAdministration {
 			await new HomeworkAPI(this._user, this._resource).sendSinceDate(date),
 		);
 	}
+
+	public startPresenceInterval = (interval: number = 2 * 60 * 1000): void => {
+		this.clearPresenceInterval();
+		this._user.session.presence = setInterval(() => new Presence(this._user, this._resource).send(), interval);
+	};
+
+	public clearPresenceInterval = (): void => {
+		if (this._user.session.presence) {
+			clearInterval(this._user.session.presence);
+			this._user.session.presence = null;
+		}
+	};
 }
 
 export * from "./Homepage";
