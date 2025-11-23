@@ -44,6 +44,3 @@ Cargo.lock
 # Cargo package files
 **/*.rs.bk
 **/*.rs~ 
-
-# Custom - tmp
-mbown
