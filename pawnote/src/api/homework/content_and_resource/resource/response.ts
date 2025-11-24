@@ -29,7 +29,7 @@ export class ResourceSubject extends Id {}
 
 export class Resource {
 	@rename("G")
-	public kind = t.number();
+	public kind = t.option(t.number());
 
 	// TODO: Search value of the array
 	// @rename("ListeThemes")
@@ -43,10 +43,10 @@ export class Resource {
 
 	@rename("ressources")
 	@deserializeWith(new TypeHttpElement(Content).array)
-	public resources = t.array(t.reference(Content));
+	public resources = t.option(t.array(t.reference(Content)));
 }
 
-export class HomeworkModel {
+export class EducationalResource {
 	@rename("listeMatieres")
 	@deserializeWith(new TypeHttpElement(Service).array)
 	public listOfContents = t.array(t.reference(Service));
@@ -54,4 +54,10 @@ export class HomeworkModel {
 	@rename("listeRessources")
 	@deserializeWith(new TypeHttpElement(Resource).array)
 	public listResources = t.array(t.reference(Resource));
+}
+
+export class HomeworkModel {
+	@rename("ListeRessourcesPedagogiques")
+	@deserializeWith(new TypeHttpElement(EducationalResource).single)
+	public resourcesList = t.reference(EducationalResource)
 }

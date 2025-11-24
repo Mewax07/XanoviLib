@@ -121,7 +121,6 @@ export const Schedule = () => {
 			el.removeEventListener("mousemove", mouseMove);
 		};
 	}, []);
-
 	useEffect(() => {
 		if (!pronote) return;
 
@@ -129,14 +128,13 @@ export const Schedule = () => {
 			const grouped: Record<string, Course[]> = {};
 
 			for (const entry of timetableInfo.entries) {
-				const day = new Date(entry.startDate).toLocaleDateString("fr-FR", {
-					weekday: "long",
-				});
+				const dateObj = new Date(entry.startDate);
+				const dayKey = dateObj.toISOString().split("T")[0];
 
-				if (!grouped[day]) grouped[day] = [];
+				if (!grouped[dayKey]) grouped[dayKey] = [];
 
 				if (entry instanceof pawnote.TimetableEntryLesson) {
-					grouped[day].push({
+					grouped[dayKey].push({
 						startDate: entry.startDate,
 						endDate: entry.endDate,
 						classrooms: entry.rooms,
@@ -158,7 +156,16 @@ export const Schedule = () => {
 				grouped[day].sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 			}
 
-			return grouped;
+			const sortedDays = Object.keys(grouped).sort();
+
+			const weekDays = sortedDays.slice(0, 5);
+
+			const limitedGrouped: Record<string, Course[]> = {};
+			weekDays.forEach((day) => {
+				limitedGrouped[day] = grouped[day];
+			});
+
+			return limitedGrouped;
 		};
 
 		const loadData = async () => {
@@ -205,161 +212,166 @@ export const Schedule = () => {
 			{!Object.keys(days).length && <p>Chargement...</p>}
 
 			<div className="carousel" ref={carouselRef}>
-				{Object.keys(days).map((day) => {
-					const courses = days[day];
-					if (!courses.length) return null;
-					let lastEnd: Date | null = null;
+				{Object.keys(days)
+					.sort()
+					.map((dayKey) => {
+						const courses = days[dayKey];
+						if (!courses.length) return null;
 
-					const firstCourse = courses[0];
-					const dateObj = new Date(firstCourse.startDate);
-					const dayNumber = dateObj.getDate();
-					const monthShort = dateObj.toLocaleDateString("fr-FR", { month: "short" });
+						let lastEnd: Date | null = null;
+						const firstCourse = courses[0];
+						const dateObj = new Date(firstCourse.startDate);
 
-					const dayDisplay = `${day.charAt(0).toUpperCase() + day.slice(1)} ${dayNumber} ${monthShort}`;
+						const weekdayName = dateObj.toLocaleDateString("fr-FR", { weekday: "long" });
+						const dayNumber = dateObj.getDate();
+						const monthShort = dateObj.toLocaleDateString("fr-FR", { month: "short" });
 
-					return (
-						<div className="schedule-day content" key={day}>
-							<p className="title">Cours du {dayDisplay}</p>
+						const dayDisplay = `${weekdayName.charAt(0).toUpperCase() + weekdayName.slice(1)} ${dayNumber} ${monthShort}`;
 
-							{courses.length === 0 && <p className="no-class">Aucun cours.</p>}
+						return (
+							<div className="schedule-day content" key={dayKey}>
+								<p className="title">Cours du {dayDisplay}</p>
 
-							{courses.map((course, i) => {
-								const start = new Date(course.startDate);
-								const end = new Date(course.endDate);
+								{courses.length === 0 && <p className="no-class">Aucun cours.</p>}
 
-								const hsl = course.backgroundColor
-									? hexToHSL(course.backgroundColor)
-									: "hsl(210, 50%, 70%)";
+								{courses.map((course, i) => {
+									const start = new Date(course.startDate);
+									const end = new Date(course.endDate);
 
-								const accent = hsl.match(/hsl\((\d+)/)?.[1] ?? "210";
+									const hsl = course.backgroundColor
+										? hexToHSL(course.backgroundColor)
+										: "hsl(210, 50%, 70%)";
 
-								let pauseBlock = null;
-								if (lastEnd && start.getTime() > lastEnd.getTime()) {
-									const { label, icon, duration } = getPauseInfo(lastEnd, start);
+									const accent = hsl.match(/hsl\((\d+)/)?.[1] ?? "210";
 
-									pauseBlock = (
-										<div
-											key={`pause-${i}`}
-											className="content no-class"
-											style={
-												{
-													"--_-accent": "0",
-													"--_-light": "0%",
-												} as any
-											}
-										>
-											<div>
-												<p className="duration">{duration}</p>
-											</div>
+									let pauseBlock = null;
+									if (lastEnd && start.getTime() > lastEnd.getTime()) {
+										const { label, icon, duration } = getPauseInfo(lastEnd, start);
 
+										pauseBlock = (
 											<div
-												className="separator"
+												key={`pause-${i}`}
+												className="content no-class"
 												style={
 													{
 														"--_-accent": "0",
 														"--_-light": "0%",
-														"--_-opacity": "0.4",
 													} as any
 												}
-											></div>
+											>
+												<div>
+													<p className="duration">{duration}</p>
+												</div>
 
-											<div className="utils">
-												<i className={`fa-regular ${icon}`}></i>
-												<p>{label}</p>
+												<div
+													className="separator"
+													style={
+														{
+															"--_-accent": "0",
+															"--_-light": "0%",
+															"--_-opacity": "0.4",
+														} as any
+													}
+												></div>
+
+												<div className="utils">
+													<i className={`fa-regular ${icon}`}></i>
+													<p>{label}</p>
+												</div>
 											</div>
-										</div>
-									);
-								}
+										);
+									}
 
-								lastEnd = end;
+									lastEnd = end;
 
-								const durationClass = end.getTime() - start.getTime() > 3600000 ? "expanded" : "normal";
+									const durationClass =
+										end.getTime() - start.getTime() > 3600000 ? "expanded" : "normal";
 
-								const diff = course.endDate.getTime() - course.startDate.getTime();
-								const minutes = Math.round(diff / 60000);
-								const duration =
-									minutes >= 60
-										? `${Math.floor(minutes / 60)}h${(minutes % 60).toString().padStart(2, "0")}`
-										: `${minutes} min`;
+									const diff = course.endDate.getTime() - course.startDate.getTime();
+									const minutes = Math.round(diff / 60000);
+									const duration =
+										minutes >= 60
+											? `${Math.floor(minutes / 60)}h${(minutes % 60).toString().padStart(2, "0")}`
+											: `${minutes} min`;
 
-								return (
-									<>
-										{pauseBlock}
-
-										<div
-											className={`content ${durationClass}`}
-											key={i}
-											style={
-												{
-													"--_-bf-accent": accent,
-													"--_-bf-light": "80%",
-													"--_-bf-opacity": "0.7",
-													"--_-af-accent": accent,
-													"--_-af-light": "70%",
-													"--_-af-opacity": "0.9",
-												} as any
-											}
-										>
-											<div className="time">
-												<p>
-													{start.toLocaleTimeString("fr-FR", {
-														hour: "2-digit",
-														minute: "2-digit",
-													})}
-												</p>
-												<p>
-													{end.toLocaleTimeString("fr-FR", {
-														hour: "2-digit",
-														minute: "2-digit",
-													})}
-												</p>
-											</div>
+									return (
+										<>
+											{pauseBlock}
 
 											<div
-												className="separator"
+												className={`content ${durationClass}`}
+												key={i}
 												style={
 													{
-														"--_-accent": accent,
-														"--_-light": "60%",
-														"--_-opacity": "0.8",
+														"--_-bf-accent": accent,
+														"--_-bf-light": "80%",
+														"--_-bf-opacity": "0.7",
+														"--_-af-accent": accent,
+														"--_-af-light": "70%",
+														"--_-af-opacity": "0.9",
 													} as any
 												}
-											></div>
-
-											<div className="info">
-												<p className="matter">{course.subject.name}</p>
-												<div className="utils">
-													<i className="fa-regular fa-location-dot"></i>
-													<p>{course.classrooms.join(", ")}</p>
-													<p>|</p>
-													<i className="fa-regular fa-user"></i>
-													<p>{course.teacherNames.join(", ")}</p>
+											>
+												<div className="time">
+													<p>
+														{start.toLocaleTimeString("fr-FR", {
+															hour: "2-digit",
+															minute: "2-digit",
+														})}
+													</p>
+													<p>
+														{end.toLocaleTimeString("fr-FR", {
+															hour: "2-digit",
+															minute: "2-digit",
+														})}
+													</p>
 												</div>
-												<div className="status">
-													{course.status && (
-														<p
-															className="change"
-															style={
-																{
-																	"--_-accent": accent,
-																	"--_-light": "60%",
-																	"--_-opacity": "0.8",
-																} as any
-															}
-														>
-															{course.status}
-														</p>
-													)}
-													<p>{duration}</p>
+
+												<div
+													className="separator"
+													style={
+														{
+															"--_-accent": accent,
+															"--_-light": "60%",
+															"--_-opacity": "0.8",
+														} as any
+													}
+												></div>
+
+												<div className="info">
+													<p className="matter">{course.subject.name}</p>
+													<div className="utils">
+														<i className="fa-regular fa-location-dot"></i>
+														<p>{course.classrooms.join(", ")}</p>
+														<p>|</p>
+														<i className="fa-regular fa-user"></i>
+														<p>{course.teacherNames.join(", ")}</p>
+													</div>
+													<div className="status">
+														{course.status && (
+															<p
+																className="change"
+																style={
+																	{
+																		"--_-accent": accent,
+																		"--_-light": "60%",
+																		"--_-opacity": "0.8",
+																	} as any
+																}
+															>
+																{course.status}
+															</p>
+														)}
+														<p>{duration}</p>
+													</div>
 												</div>
 											</div>
-										</div>
-									</>
-								);
-							})}
-						</div>
-					);
-				})}
+										</>
+									);
+								})}
+							</div>
+						);
+					})}
 			</div>
 		</div>
 	);

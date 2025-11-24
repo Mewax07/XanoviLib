@@ -330,7 +330,7 @@ section.main-ctn {
 }
 
 .workspace .main-panel .content .content:hover {
-	background-color: hsla(calc(var(--_-af-accent)), 30%, 9%, 0.7);
+	background-color: hsla(calc(var(--_-af-accent)), 90%, 9%, 0.9);
 }
 
 .workspace .main-panel .content .content::before,
