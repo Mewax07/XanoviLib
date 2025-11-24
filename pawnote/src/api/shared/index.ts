@@ -247,7 +247,7 @@ export class Absences {
 
 export class HomeworkContentSubject {
 	@rename("L")
-	public labal = t.string();
+	public label = t.string();
 
 	@rename("N")
 	public id = t.string();

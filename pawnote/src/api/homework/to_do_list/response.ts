@@ -1,8 +1,8 @@
 import { deserializeWith, rename, t } from "~d0/index";
+import { AttachmentDifficulty, AttachmentReturnKind } from "~p0/api/models/attachment";
 import { TypeHttpDateTime } from "../../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../../http/TypeHttpElement";
 import { HomeworkContentSubject, Id } from "../../shared";
-import { AttachmentDifficulty, AttachmentReturnKind } from "~p0/api/models/attachment";
 
 export class HomeworkBase {
 	@rename("N")
@@ -30,7 +30,6 @@ export class HomeworkBase {
 	public difficultyLevel = t.option(t.enum(AttachmentDifficulty));
 }
 
-
 export class _Homework extends HomeworkBase {
 	@rename("nomPublic")
 	public publicName = t.option(t.string());
@@ -51,11 +50,11 @@ export class _Homework extends HomeworkBase {
 
 	@rename("Matiere")
 	@deserializeWith(new TypeHttpElement(HomeworkContentSubject).single)
-	public subject = t.array(t.reference(HomeworkContentSubject));
+	public subject = t.reference(HomeworkContentSubject);
 
 	@rename("cours")
 	@deserializeWith(new TypeHttpElement(Id).single)
-	public course = t.option(t.array(t.reference(Id)));
+	public course = t.option(t.reference(Id));
 
 	// @rename("descriptif")
 }

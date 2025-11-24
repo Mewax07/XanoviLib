@@ -1,4 +1,4 @@
-import { Content, Course } from "~p0/api/shared";
+import { Course } from "~p0/api/shared";
 import { Parameters } from "~p0/models/params";
 
 export class TimetableEntry {

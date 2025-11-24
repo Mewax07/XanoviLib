@@ -1,9 +1,9 @@
 import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpDateTime } from "../../../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../../../http/TypeHttpElement";
-import { CategoryOrigin, HomeworkContentSubject, Id, Label } from "../../../shared";
+import { HomeworkContentSubject, Id, Label } from "../../../shared";
 
-export class Content extends Label {
+export class Content extends Id {
 	/*
 	@rename("ListePieceJointe")
 	@deserializeWith(new TypeHttpElement(Id).single)

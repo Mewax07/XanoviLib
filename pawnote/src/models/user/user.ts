@@ -1,4 +1,3 @@
-import { AttachmentKind } from "~p0/api/models/attachment";
 import { Authentication } from "../authentication";
 import { Parameters } from "../params";
 import { Session } from "../session";

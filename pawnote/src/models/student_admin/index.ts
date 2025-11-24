@@ -1,4 +1,5 @@
 import { HomeworkAPI } from "~p0/api/homework";
+import { AttachmentKind } from "~p0/api/models/attachment";
 import { Presence } from "~p0/api/presence";
 import { HomepageAPI } from "../../api/homepage";
 import { TimetableAPI } from "../../api/timetable";
@@ -8,6 +9,13 @@ import { User } from "../user/user";
 import { Homepage } from "./Homepage";
 import { Homework } from "./Homework";
 import { Timetable } from "./Timetable";
+
+export interface Attachment {
+	id: string;
+	label: string;
+	kind: number;
+	url?: string | URL;
+}
 
 export class StudentAdministration {
 	/** @internal */
@@ -42,6 +50,8 @@ export class StudentAdministration {
 	public async getHomeworkFromIntervals(start?: number, end?: number): Promise<Homework> {
 		return new Homework(
 			this._user.parameters,
+			this._user,
+			this._resource,
 			await new HomeworkAPI(this._user, this._resource).sendIntervals(start, end),
 		);
 	}
@@ -49,21 +59,42 @@ export class StudentAdministration {
 	public async getHomeworkSinceDate(date?: Date): Promise<Homework> {
 		return new Homework(
 			this._user.parameters,
+			this._user, 
+			this._resource,
 			await new HomeworkAPI(this._user, this._resource).sendSinceDate(date),
 		);
 	}
 
-	public startPresenceInterval = (interval: number = 2 * 60 * 1000): void => {
+	public startPresenceInterval(interval: number = 2 * 60 * 1000) {
 		this.clearPresenceInterval();
 		this._user.session.presence = setInterval(() => new Presence(this._user, this._resource).send(), interval);
-	};
+	}
 
-	public clearPresenceInterval = (): void => {
+	public clearPresenceInterval() {
 		if (this._user.session.presence) {
 			clearInterval(this._user.session.presence);
 			this._user.session.presence = null;
 		}
-	};
+	}
+
+	public getInfos(attachment: Attachment, parameters = {}) {
+		const { id, label, kind } = attachment;
+		let url: string;
+
+		if (kind === AttachmentKind.Link) {
+			url = attachment.url!.toString() ?? label;
+		} else {
+			const data = JSON.stringify({
+				N: id,
+				Actif: true,
+
+				...parameters,
+			});
+
+			const encrypted = this._user.session.aes.encrypt(data);
+			url = `${this._user.session.url}/FichiersExternes${encrypted}/${encodeURIComponent(label)}?Session=${this._user.id}`;
+		}
+	}
 }
 
 export * from "./Homepage";
