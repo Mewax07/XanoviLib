@@ -1,11 +1,24 @@
 import { EntityState } from "../models/entity";
 
-export interface AssignmentRequest {
+export type AssignmentRequest = AssignmentRequestStatus | AssignmentRequestRemove;
+
+export interface AssignmentRequestStatus {
 	listeTAF: [
 		{
 			E: EntityState;
 			TAFFait: boolean;
 			N: string;
+		},
+	];
+}
+
+export interface AssignmentRequestRemove {
+	listeFichiers: [
+		{
+			E: EntityState;
+			TAF: {
+				N: string;
+			};
 		},
 	];
 }
