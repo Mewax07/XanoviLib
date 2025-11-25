@@ -3,8 +3,31 @@ declare namespace exports_src {
 }
 declare function m(): void;
 declare namespace exports_src2 {
-	export { Webspace, Version, User, UnreachableError, TimetableEntryLesson, TimetableEntryDetention, TimetableEntryActivity, TimetableEntry, Timetable, SuspendedIpError, Subject, StudentLoginPortal, StudentAdministration2 as StudentAdministration, Student, SourceTooLongError, SessionRSA, SessionExpiredError, SessionAPI, SessionAES, Session, ServerSideError, ResponseFunctionWrapper, ResponseFunction, RequestFunction, RateLimitedError, PendingLogin, ParentLoginPortal, Parent, PageUnavailableError, LoginPortal, LessonCategory, InstanceInformationWebspace, InstanceInformationCAS, InstanceInformation, Instance, Homework2 as Homework, HomepageSessionAccess, HomepageSession, Homepage, Child, BusyPageError, BadCredentialsError, AuthenticateError, AccountDisabledError, AccessDeniedError };
+	export { translateToWeekNumber, setDayToStart, setDayToEnd, getTimeUTC, getSchoolWeekNumber, getDateUTC, Webspace, Version, User, UploadSizeError, UploadFailedError, UnreachableError, UA, TimetableEntryLesson, TimetableEntryDetention, TimetableEntryActivity, TimetableEntry, Timetable, SuspendedIpError, Subject2 as Subject, StudentLoginPortal, StudentAdministration2 as StudentAdministration, Student, SourceTooLongError, SessionRSA, SessionExpiredError, SessionAPI, SessionAES, Session, ServerSideError, ResponseFunctionWrapper, ResponseFunction, RequestFunction, RateLimitedError, PendingLogin, ParentLoginPortal, Parent, PageUnavailableError, LoginPortal, LessonCategory, InstanceInformationWebspace, InstanceInformationCAS, InstanceInformation, Instance, Homework2 as Homework, HomepageSessionAccess, HomepageSession, Homepage, Child, BusyPageError, BadCredentialsError, AuthenticateError, Attachment, AccountDisabledError, AccessDeniedError };
 }
+declare const translateToWeekNumber: (dateToTranslate: Date, startDay: Date) => number;
+declare const setDayToStart: (date: Date) => void;
+declare const setDayToEnd: (date: Date) => void;
+declare const getTimeUTC: (date: Date) => number;
+declare const getDateUTC: (date: Date) => Date;
+interface WeekFrequency {
+	label?: string;
+	fortnight?: string;
+}
+interface Period {
+	startDate: Date;
+	endDate: Date;
+}
+interface CurrentWeekOptions {
+	firstMonday: Date;
+	weekFrequencies: Record<number, WeekFrequency> | Map<number, WeekFrequency>;
+	firstDate: Date;
+	lastDate: Date;
+	periods: Period[];
+	date?: Date;
+}
+declare function getSchoolWeekNumber({ firstMonday, weekFrequencies, firstDate, lastDate, periods, date }: CurrentWeekOptions): number | null;
+declare const UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 PRONOTE Mobile APP Version/2.0.11";
 declare class AccessDeniedError extends Error {
 	constructor();
 }
@@ -40,6 +63,12 @@ declare class SuspendedIpError extends Error {
 }
 declare class UnreachableError extends Error {
 	constructor(fn: string);
+}
+declare class UploadSizeError extends Error {
+	constructor(maxSizeInBytes: number);
+}
+declare class UploadFailedError extends Error {
+	constructor();
 }
 type Version = Array<number>;
 declare namespace Version {
@@ -160,13 +189,13 @@ declare class TypeHttpNote2 {
 	constructor(value: string);
 	static deserializer: (value: Note) => TypeHttpNote2;
 }
-declare enum AttachmentDifficulty {
+declare enum AttachmentDifficulty2 {
 	None = 0,
 	Easy = 1,
 	Medium = 2,
 	Hard = 3
 }
-declare enum AttachmentReturnKind {
+declare enum AttachmentReturnKind2 {
 	None = 0,
 	Paper = 1,
 	FileUpload = 2,
@@ -289,7 +318,7 @@ declare class Absences {
 	dayCycles: DayCycle[];
 }
 declare class HomeworkContentSubject {
-	labal: string;
+	label: string;
 	id: string;
 }
 declare class Service {
@@ -324,8 +353,8 @@ declare class HomeworkBase {
 	canComplete: boolean | null;
 	withReturn: boolean | null;
 	done: boolean;
-	returnType: AttachmentReturnKind | null;
-	difficultyLevel: AttachmentDifficulty | null;
+	returnType: AttachmentReturnKind2 | null;
+	difficultyLevel: AttachmentDifficulty2 | null;
 }
 declare class HomeworkContent extends HomeworkBase {
 	kind: number;
@@ -373,12 +402,12 @@ declare class Parameters {
 	get firstDate(): Date;
 	get lastDate(): Date;
 	get endings(): Array<string>;
-	get periods(): Array<Period>;
+	get periods(): Array<Period2>;
 	get holidays(): Array<Holiday>;
-	get weekFrequencies(): Map<number, WeekFrequency>;
+	get weekFrequencies(): Map<number, WeekFrequency2>;
 	dateToWeekNumber(date: Date): number;
 }
-declare class WeekFrequency {
+declare class WeekFrequency2 {
 	readonly frequency: number;
 	label: string;
 }
@@ -389,7 +418,7 @@ declare class Holiday {
 	endDate: Date;
 	constructor(ferie: JoursFeries);
 }
-declare class Period {
+declare class Period2 {
 	private readonly periode;
 	constructor(periode: Periode2);
 	get id(): string;
@@ -527,10 +556,7 @@ declare class Homepage {
 	get agenda(): AgendaList;
 	get notes(): Notes;
 }
-declare class Content2 extends Label {
-	unk_ListePieceJointe: Id[] | null;
-	unk_ListeThemes: Id[] | null;
-	category: CategoryOrigin[] | null;
+declare class Content2 extends Id {
 	themeLabel: string | null;
 }
 declare class _Homework extends Id {
@@ -539,7 +565,7 @@ declare class _Homework extends Id {
 	endDate: Date;
 	subject: HomeworkContentSubject[];
 	course: Id[] | null;
-	dueDate: Date;
+	dueDate: Date | null;
 	contentList: Content2[] | null;
 	teacherList: Label[];
 	locked: boolean | null;
@@ -548,6 +574,27 @@ declare class HomeworkModel {
 	homeworkList: _Homework[];
 }
 type HomeworkResponse = ResponseFunctionWrapper<HomeworkModel>;
+declare class Service2 {
+	label: string;
+	id: string;
+	kind: number;
+	color: string;
+}
+declare class ResourceSubject2 extends Id {}
+declare class Resource2 {
+	kind: number | null;
+	date: Date;
+	subject: ResourceSubject2[];
+	resources: Content[] | null;
+}
+declare class EducationalResource2 {
+	listOfContents: Service2[];
+	listResources: Resource2[];
+}
+declare class HomeworkModel2 {
+	resourcesList: EducationalResource2;
+}
+type HomeworkResponse2 = ResponseFunctionWrapper<HomeworkModel2>;
 declare class HomeworkBase2 {
 	id: string;
 	duringTime: number;
@@ -555,8 +602,8 @@ declare class HomeworkBase2 {
 	canComplete: boolean | null;
 	withReturn: boolean | null;
 	done: boolean;
-	returnType: AttachmentReturnKind | null;
-	difficultyLevel: AttachmentDifficulty | null;
+	returnType: AttachmentReturnKind2 | null;
+	difficultyLevel: AttachmentDifficulty2 | null;
 }
 declare class _Homework2 extends HomeworkBase2 {
 	publicName: string | null;
@@ -564,21 +611,61 @@ declare class _Homework2 extends HomeworkBase2 {
 	withFormat: boolean;
 	givenOn: Date;
 	dueOn: Date;
-	subject: HomeworkContentSubject[];
-	course: Id[] | null;
+	subject: HomeworkContentSubject;
+	course: Id | null;
 }
-declare class HomeworkModel2 {
+declare class HomeworkModel3 {
 	homeworkList: _Homework2[];
 }
-type HomeworkResponse2 = ResponseFunctionWrapper<HomeworkModel2>;
-type HomeworkResponse3 = {
-	toDoList: HomeworkResponse2;
+type HomeworkResponse3 = ResponseFunctionWrapper<HomeworkModel3>;
+type HomeworkResponse4 = {
+	toDoList: HomeworkResponse3;
 	content: HomeworkResponse;
+	resource: HomeworkResponse2;
 };
+declare abstract class User {
+	get username(): string;
+	get token(): string;
+	get uuid(): string;
+	get id(): string;
+	get name(): string;
+	get kind(): number;
+}
+declare class Student extends User {
+	readonly administration: StudentAdministration2;
+}
+declare class HomeworkAssignmentEntry {
+	protected readonly parameters: Parameters;
+	protected readonly user: User;
+	protected readonly resource: Student | Child;
+	protected readonly assignment: _Homework2;
+	get id(): string;
+	get subject(): Subject;
+	get backgroundColor(): string;
+	get blockLength(): number;
+	get givenOn(): Date;
+	get dueOn(): Date;
+	get canComplete(): boolean;
+	get isCompleted(): boolean;
+	private set isCompleted(value);
+	get returnType(): import("../../../api/models/attachment").AttachmentReturnKind | null;
+	get difficultyLevel(): import("../../../api/models/attachment").AttachmentDifficulty | null;
+	get courseId(): string;
+	toggleDone(): Promise<boolean>;
+	setDone(done?: boolean): Promise<boolean>;
+}
+declare class Subject {
+	private subject;
+	get id(): string;
+	get label(): string;
+}
 declare class Homework2 {
 	private parameters;
-	private _raw;
-	constructor(parameters: Parameters, _raw: HomeworkResponse3);
+	private user;
+	private readonly resource;
+	private homework;
+	readonly entries: Array<HomeworkAssignmentEntry>;
+	constructor(parameters: Parameters, user: User, resource: Student | Child, homework: HomeworkResponse4);
 }
 declare class GridPreferences {
 	resourceType: number;
@@ -615,7 +702,7 @@ declare class LessonCategory {
 	get labelIcon(): string;
 	get test(): boolean;
 }
-declare class Subject {
+declare class Subject2 {
 	readonly id: string;
 	readonly name: string;
 	readonly inGroups: boolean;
@@ -640,7 +727,7 @@ declare class TimetableEntryLesson extends TimetableEntry {
 	get resourceId(): string | null;
 	get test(): boolean;
 	get exempted(): boolean;
-	get subject(): Subject | null;
+	get subject(): Subject2 | null;
 	get teachers(): Array<string>;
 	get staff(): Array<string>;
 	get rooms(): Array<string>;
@@ -657,6 +744,12 @@ declare class Timetable {
 	private getSuperimposedClassesIndexes;
 	private makeSuperimposedCanceledClassesInvisible;
 }
+interface Attachment {
+	id: string;
+	label: string;
+	kind: number;
+	url?: string | URL;
+}
 declare class StudentAdministration2 {
 	private readonly _user;
 	private readonly _sub?;
@@ -666,16 +759,9 @@ declare class StudentAdministration2 {
 	getTimetableFromWeek(week?: number): Promise<Timetable>;
 	getHomeworkFromIntervals(start?: number, end?: number): Promise<Homework2>;
 	getHomeworkSinceDate(date?: Date): Promise<Homework2>;
-	startPresenceInterval: (interval?: number) => void;
-	clearPresenceInterval: () => void;
-}
-declare abstract class User {
-	get username(): string;
-	get token(): string;
-	get uuid(): string;
-	get id(): string;
-	get name(): string;
-	get kind(): number;
+	startPresenceInterval(interval?: number): void;
+	clearPresenceInterval(): void;
+	getInfos(attachment: Attachment, parameters?: {}): void;
 }
 declare class Child {
 	readonly parent: Parent;
@@ -693,9 +779,6 @@ declare class ParentLoginPortal extends LoginPortal {
 	credentials(username: string, password: string, deviceUUID?: string, navigatorIdentifier?: string | null): Promise<PendingLogin>;
 	token(username: string, token: string, deviceUUID: string, navigatorIdentifier?: string | null): Promise<PendingLogin>;
 	finish(login: PendingLogin): Promise<Parent>;
-}
-declare class Student extends User {
-	readonly administration: StudentAdministration2;
 }
 declare class StudentLoginPortal extends LoginPortal {
 	constructor(instance: Instance);
