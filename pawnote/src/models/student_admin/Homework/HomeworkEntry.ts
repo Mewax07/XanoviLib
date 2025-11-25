@@ -1,6 +1,12 @@
 import { AssignmentAPI } from "~p0/api/assignment";
+import { AssignmentDataStatus } from "~p0/api/assignment/request";
+import {
+	Content as HomeworkContent,
+	_Homework as Homework_Content,
+} from "~p0/api/homework/content_and_resource/content/response";
+import { Resource as Homework_Resource } from "~p0/api/homework/content_and_resource/resource/response";
 import { _Homework as Homework_ToDoList } from "~p0/api/homework/to_do_list/response";
-import { HomeworkContentSubject } from "~p0/api/shared";
+import { HomeworkContentSubject, Content as HomeworkResourceContent } from "~p0/api/shared";
 import { Parameters } from "~p0/models/params";
 import { Child } from "~p0/models/user/parent";
 import { Student } from "~p0/models/user/student";
@@ -29,6 +35,10 @@ export class HomeworkAssignmentEntry {
 
 	public get blockLength(): number {
 		return this.assignment.duringTime;
+	}
+
+	public get task(): string {
+		return this.assignment.descriptif;
 	}
 
 	public get givenOn(): Date {
@@ -64,15 +74,67 @@ export class HomeworkAssignmentEntry {
 	}
 
 	public async toggleDone(): Promise<boolean> {
-		await new AssignmentAPI(this.user, this.resource).send(this.id, !this.isCompleted);
+		await new AssignmentAPI(this.user, this.resource).send({
+			assignmentId: this.id,
+			done: !this.isCompleted,
+		} as AssignmentDataStatus);
 		this.isCompleted = !this.isCompleted;
 		return this.isCompleted;
 	}
 
 	public async setDone(done: boolean = true): Promise<boolean> {
-		await new AssignmentAPI(this.user, this.resource).send(this.id, done);
+		await new AssignmentAPI(this.user, this.resource).send({
+			assignmentId: this.id,
+			done: done,
+		} as AssignmentDataStatus);
 		this.isCompleted = done;
 		return this.isCompleted;
+	}
+}
+
+export class HomeowrkContentEntry {
+	/** @internal */
+	public constructor(
+		protected readonly parameters: Parameters,
+		protected readonly user: User,
+		protected readonly resource: Student | Child,
+		protected readonly assignment: Homework_Content,
+	) {}
+
+	public get id(): string {
+		return this.assignment.id;
+	}
+
+	public get content(): Content[] {
+		let contents = [];
+		if (this.assignment.contentList) {
+			for (let ctn of this.assignment.contentList) {
+				contents.push(new Content(ctn));
+			}
+		}
+		return contents;
+	}
+}
+
+export class HomeowrkResourceEntry {
+	/** @internal */
+	public constructor(
+		protected readonly parameters: Parameters,
+		protected readonly user: User,
+		protected readonly resource: Student | Child,
+		protected readonly assignment: Homework_Resource,
+	) {}
+
+	public get date(): Date {
+		return this.assignment.date;
+	}
+
+	public get resources(): Resource {
+		return new Resource(this.assignment.resources);
+	}
+
+	public get subjectId(): string {
+		return this.assignment.subject.id;
 	}
 }
 
@@ -89,15 +151,32 @@ class Subject {
 	}
 }
 
-class Teacher {
+class Content {
 	/** @internal */
-	public constructor(private subject: HomeworkContentSubject) {}
+	public constructor(private content: HomeworkContent) {}
 
 	public get id() {
-		return this.subject.id;
+		return this.content.id;
+	}
+
+	public get attachments() {
+		return this.content.unk_ListePieceJointe;
+	}
+}
+
+class Resource {
+	/** @internal */
+	public constructor(private resource: HomeworkResourceContent) {}
+
+	public get id() {
+		return this.resource.id;
 	}
 
 	public get label() {
-		return this.subject.label;
+		return this.resource.label;
+	}
+
+	public get kind() {
+		return this.resource.kind;
 	}
 }

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { usePronoteConnected } from "../../../api/homepage";
 import { loadSchedule, saveSchedule } from "../../../cache/scheduleCache";
-import Xanovi from "../../../lib/xanovi_lib";
 import { hexToHSL } from "../../../utils/color";
-const pawnote = Xanovi.pronote;
 
-const ONE_HOUR = 60 * 60 * 100;
+import Xanovi from "../../../lib/xanovi_lib";
+import { ONE_HOUR } from "..";
+const pawnote = Xanovi.pronote;
 
 interface Course {
 	startDate: Date;
@@ -123,8 +123,7 @@ export const Schedule = () => {
 	}, []);
 	useEffect(() => {
 		if (!pronote) return;
-
-		const processData = (timetableInfo: any) => {
+		const processData = (timetableInfo: InstanceType<typeof pawnote.Timetable>) => {
 			const grouped: Record<string, Course[]> = {};
 
 			for (const entry of timetableInfo.entries) {
@@ -180,13 +179,13 @@ export const Schedule = () => {
 			}
 
 			if (!hasInternet && cache) {
-				console.log("No internet → using old cache");
+				console.log("No internet, using old cache");
 				setDays(cache.data);
 				return;
 			}
 
 			try {
-				console.log("Fetching new timetable…");
+				console.log("Fetching new timetable...");
 				const timetableInfo = await pronote.timetable();
 				console.log(timetableInfo);
 

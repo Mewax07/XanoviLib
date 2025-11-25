@@ -13,6 +13,11 @@ export class Label extends Id {
 	public label = t.string();
 }
 
+export class Kind extends Label {
+	@rename("G")
+	public kind = t.number();
+}
+
 export class Content {
 	@rename("N")
 	public id = t.option(t.string());

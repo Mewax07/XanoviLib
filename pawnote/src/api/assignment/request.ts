@@ -1,6 +1,8 @@
+import { FormDataFile } from "schwi";
+import { DocumentKind } from "../models/document";
 import { EntityState } from "../models/entity";
 
-export type AssignmentRequest = AssignmentRequestStatus | AssignmentRequestRemove;
+export type AssignmentRequest = AssignmentRequestStatus | AssignmentRequestUpload | AssignmentRequestRemove;
 
 export interface AssignmentRequestStatus {
 	listeTAF: [
@@ -8,6 +10,21 @@ export interface AssignmentRequestStatus {
 			E: EntityState;
 			TAFFait: boolean;
 			N: string;
+		},
+	];
+}
+
+export interface AssignmentRequestUpload {
+	listeFichiers: [
+		{
+			E: EntityState;
+			G: DocumentKind;
+			L: string;
+			N: number;
+			idFichier: string;
+			TAF: {
+				N: string;
+			};
 		},
 	];
 }
@@ -21,6 +38,24 @@ export interface AssignmentRequestRemove {
 			};
 		},
 	];
+}
+
+export interface AssignmentDataStatus {
+	type: "status",
+	assignmentId: string;
+	done: boolean
+}
+
+export interface AssignmentDataUpload {
+	type: "upload",
+	assignmentId: string;
+	file: FormDataFile;
+	fileName: string;
+}
+
+export interface AssignmentDataRemove {
+	type: "remove",
+	assignmentId: string;
 }
 
 export interface AssignmentRequestSignature {

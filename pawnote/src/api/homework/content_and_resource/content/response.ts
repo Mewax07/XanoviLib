@@ -1,14 +1,17 @@
 import { deserializeWith, rename, t } from "~d0/index";
 import { TypeHttpDateTime } from "../../../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../../../http/TypeHttpElement";
-import { HomeworkContentSubject, Id, Label } from "../../../shared";
+import { HomeworkContentSubject, Id, Kind, Label } from "../../../shared";
+
+export class Attachment extends Kind {
+	@rename("estUnLienInterne")
+	public isAnInternalLink = t.option(t.boolean());
+}
 
 export class Content extends Id {
-	/*
 	@rename("ListePieceJointe")
-	@deserializeWith(new TypeHttpElement(Id).single)
-	public unk_ListePieceJointe = t.option(t.array(t.reference(Id))); // Unkown ListePieceJointe array result
-	*/
+	@deserializeWith(new TypeHttpElement(Attachment).single)
+	public unk_ListePieceJointe = t.option(t.array(t.reference(Attachment))); // Unkown ListePieceJointe array result
 
 	/*
 	@rename("ListeThemes")

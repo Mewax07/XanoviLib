@@ -1,9 +1,18 @@
-import { Child, Student, User } from "../../models";
+import { RequestUpload } from "~p0/models/upload";
+import { Child, Student, UploadSizeError, User } from "../../models";
 import { RequestFunction } from "../../models/request";
 import { ResponseFunction, ResponseFunctionWrapper } from "../../models/response";
+import { DocumentKind } from "../models/document";
 import { EntityState } from "../models/entity";
-import { AssignmentRequest, AssignmentRequestSignature } from "./request";
+import {
+	AssignmentDataRemove,
+	AssignmentDataStatus,
+	AssignmentDataUpload,
+	AssignmentRequest,
+	AssignmentRequestSignature,
+} from "./request";
 import { AssignmentModel } from "./response";
+import { createEntityID } from "~p0/core/entity";
 
 export type AssignmentResponse = ResponseFunctionWrapper<AssignmentModel>;
 
@@ -22,29 +31,97 @@ export class AssignmentAPI extends RequestFunction<AssignmentRequest, Assignment
 		this.decoder = new ResponseFunction(this.session, AssignmentModel);
 	}
 
-	public async send(id: string, done: boolean = true): Promise<AssignmentResponse> {
-		const response = await this.execute(
-			{
-				listeTAF: [
-					{
-						E: EntityState.MODIFICATION,
-						TAFFait: done,
-						N: id,
-					},
-				],
-			},
-			{
-				onglet: 88,
-				membre:
-					this.resource instanceof Child
-						? {
-								G: this.resource.kind,
-								N: this.resource.id,
-							}
-						: void 0,
-			},
-		);
+	public async send(
+		data: AssignmentDataStatus | AssignmentDataUpload | AssignmentDataRemove,
+	): Promise<AssignmentResponse> {
+		if (data.type === "upload") {
+			// Check if the file can be uploaded.
+			// Otherwise we'll get an error during the upload.
+			// @ts-expect-error : trust the process.
+			const fileSize: number | undefined = data.file.size || data.file.byteLength;
+			const maxFileSize = this.user.user.authorizations.maxAssignmentFileUploadSize;
+			if (typeof fileSize === "number" && fileSize > maxFileSize) {
+				throw new UploadSizeError(maxFileSize);
+			}
 
-		return this.decoder.decode(response);
+			const fileUpload = new RequestUpload(this.session, "SaisieTAFARendreEleve", data.file, data.fileName);
+			await fileUpload.execute();
+
+			const response = await this.execute(
+				{
+					listeFichiers: [
+						{
+							E: EntityState.CREATION,
+							G: DocumentKind.FILE,
+							L: data.fileName,
+							N: createEntityID(),
+							idFichier: fileUpload.id,
+							TAF: { N: data.assignmentId },
+						},
+					],
+				},
+				{
+					onglet: 88,
+					membre:
+						this.resource instanceof Child
+							? {
+									G: this.resource.kind,
+									N: this.resource.id,
+								}
+							: void 0,
+				},
+			);
+
+			return this.decoder.decode(response);
+		} else if (data.type === "remove") {
+			const response = await this.execute(
+				{
+					listeFichiers: [
+						{
+							E: EntityState.MODIFICATION,
+							TAF: {
+								N: data.assignmentId
+							}
+						},
+					],
+				},
+				{
+					onglet: 88,
+					membre:
+						this.resource instanceof Child
+							? {
+									G: this.resource.kind,
+									N: this.resource.id,
+								}
+							: void 0,
+				},
+			);
+
+			return this.decoder.decode(response);
+		} else {
+			const response = await this.execute(
+				{
+					listeTAF: [
+						{
+							E: EntityState.MODIFICATION,
+							TAFFait: data.done,
+							N: data.assignmentId,
+						},
+					],
+				},
+				{
+					onglet: 88,
+					membre:
+						this.resource instanceof Child
+							? {
+									G: this.resource.kind,
+									N: this.resource.id,
+								}
+							: void 0,
+				},
+			);
+
+			return this.decoder.decode(response);
+		}
 	}
 }

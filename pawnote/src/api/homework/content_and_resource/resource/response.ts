@@ -39,11 +39,11 @@ export class Resource {
 
 	@rename("matiere")
 	@deserializeWith(new TypeHttpElement(ResourceSubject).single)
-	public subject = t.array(t.reference(ResourceSubject));
+	public subject = t.reference(ResourceSubject);
 
 	@rename("ressources")
-	@deserializeWith(new TypeHttpElement(Content).array)
-	public resources = t.option(t.array(t.reference(Content)));
+	@deserializeWith(new TypeHttpElement(Content).single)
+	public resources = t.reference(Content);
 }
 
 export class EducationalResource {
@@ -59,5 +59,5 @@ export class EducationalResource {
 export class HomeworkModel {
 	@rename("ListeRessourcesPedagogiques")
 	@deserializeWith(new TypeHttpElement(EducationalResource).single)
-	public resourcesList = t.reference(EducationalResource)
+	public resourcesList = t.reference(EducationalResource);
 }

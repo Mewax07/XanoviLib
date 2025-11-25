@@ -6,9 +6,9 @@ import { Session } from "./session";
 import { UploadFailedError } from "./errors";
 
 export class RequestUpload {
-	private readonly id = `selectfile_1_${Date.now()}`;
+	public readonly id = `selectfile_1_${Date.now()}`;
 
-	protected constructor(
+	public constructor(
 		private readonly session: Session,
 		private readonly functionName: string,
 		private readonly file: FormDataFile,

@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
 import Home from "./pages/Home";
+import Work from "./pages/Homework";
 import Schedule from "./pages/Schedule";
+
+export const ONE_HOUR = 60 * 60 * 100;
 
 export type PageName = "home" | "schedule" | "work" | "notes";
 
@@ -16,8 +19,8 @@ export const Content = ({ page, children }: ContentProps) => {
 				return <Home />;
 			case "schedule":
 				return <Schedule />;
-			// case "work":
-			// 	return <Work />;
+			case "work":
+				return <Work />;
 			// case "notes":
 			// 	return <Notes />;
 			default:

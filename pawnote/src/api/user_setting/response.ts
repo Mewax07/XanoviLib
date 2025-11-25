@@ -110,7 +110,7 @@ export class AutorisationsSession {
 }
 
 // First time implementing Student and Parent.
-class UserAuthorizations {
+export class UserAuthorizations {
 	@rename("AvecDiscussion")
 	@defaultValue(false)
 	public canDiscuss = t.boolean();

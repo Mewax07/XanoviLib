@@ -1,4 +1,5 @@
 import { deserializeWith, rename, t } from "~d0/index";
+import { TypeHttpHtml } from "~p0/api/http/TypeHttpHtml";
 import { AttachmentDifficulty, AttachmentReturnKind } from "~p0/api/models/attachment";
 import { TypeHttpDateTime } from "../../http/TypeHttpDateTime";
 import { TypeHttpElement } from "../../http/TypeHttpElement";
@@ -56,7 +57,9 @@ export class _Homework extends HomeworkBase {
 	@deserializeWith(new TypeHttpElement(Id).single)
 	public course = t.option(t.reference(Id));
 
-	// @rename("descriptif")
+	@rename("descriptif")
+	@deserializeWith(TypeHttpHtml.deserializer)
+	public descriptif = t.string();
 }
 
 export class HomeworkModel {

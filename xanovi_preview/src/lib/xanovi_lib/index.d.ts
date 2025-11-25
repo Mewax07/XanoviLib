@@ -3,7 +3,7 @@ declare namespace exports_src {
 }
 declare function m(): void;
 declare namespace exports_src2 {
-	export { translateToWeekNumber, setDayToStart, setDayToEnd, getTimeUTC, getSchoolWeekNumber, getDateUTC, Webspace, Version, User, UploadSizeError, UploadFailedError, UnreachableError, UA, TimetableEntryLesson, TimetableEntryDetention, TimetableEntryActivity, TimetableEntry, Timetable, SuspendedIpError, Subject2 as Subject, StudentLoginPortal, StudentAdministration2 as StudentAdministration, Student, SourceTooLongError, SessionRSA, SessionExpiredError, SessionAPI, SessionAES, Session, ServerSideError, ResponseFunctionWrapper, ResponseFunction, RequestFunction, RateLimitedError, PendingLogin, ParentLoginPortal, Parent, PageUnavailableError, LoginPortal, LessonCategory, InstanceInformationWebspace, InstanceInformationCAS, InstanceInformation, Instance, Homework2 as Homework, HomepageSessionAccess, HomepageSession, Homepage, Child, BusyPageError, BadCredentialsError, AuthenticateError, Attachment, AccountDisabledError, AccessDeniedError };
+	export { translateToWeekNumber, setDayToStart, setDayToEnd, getTimeUTC, getSchoolWeekNumber, getDateUTC, Webspace, Version, User, UploadSizeError, UploadFailedError, UnreachableError, UA, TimetableEntryLesson, TimetableEntryDetention, TimetableEntryActivity, TimetableEntry, Timetable, SuspendedIpError, Subject2 as Subject, StudentLoginPortal, StudentAdministration2 as StudentAdministration, Student, SourceTooLongError, SessionRSA, SessionExpiredError, SessionAPI, SessionAES, Session, ServerSideError, ResponseFunctionWrapper, ResponseFunction, RequestFunction, RateLimitedError, PendingLogin, ParentLoginPortal, Parent, PageUnavailableError, LoginPortal, LessonCategory, InstanceInformationWebspace, InstanceInformationCAS, InstanceInformation, Instance, Homework2 as Homework, HomepageSessionAccess, HomepageSession, Homepage, Child, BusyPageError, BadCredentialsError, AuthenticateError, Attachment3 as Attachment, AccountDisabledError, AccessDeniedError };
 }
 declare const translateToWeekNumber: (dateToTranslate: Date, startDay: Date) => number;
 declare const setDayToStart: (date: Date) => void;
@@ -224,6 +224,9 @@ declare class Id {
 }
 declare class Label extends Id {
 	label: string;
+}
+declare class Kind extends Label {
+	kind: number;
 }
 declare class Content {
 	id: string | null;
@@ -556,7 +559,11 @@ declare class Homepage {
 	get agenda(): AgendaList;
 	get notes(): Notes;
 }
+declare class Attachment2 extends Kind {
+	isAnInternalLink: boolean | null;
+}
 declare class Content2 extends Id {
+	unk_ListePieceJointe: Attachment2[] | null;
 	themeLabel: string | null;
 }
 declare class _Homework extends Id {
@@ -584,8 +591,8 @@ declare class ResourceSubject2 extends Id {}
 declare class Resource2 {
 	kind: number | null;
 	date: Date;
-	subject: ResourceSubject2[];
-	resources: Content[] | null;
+	subject: ResourceSubject2;
+	resources: Content;
 }
 declare class EducationalResource2 {
 	listOfContents: Service2[];
@@ -613,6 +620,7 @@ declare class _Homework2 extends HomeworkBase2 {
 	dueOn: Date;
 	subject: HomeworkContentSubject;
 	course: Id | null;
+	descriptif: string;
 }
 declare class HomeworkModel3 {
 	homeworkList: _Homework2[];
@@ -643,6 +651,7 @@ declare class HomeworkAssignmentEntry {
 	get subject(): Subject;
 	get backgroundColor(): string;
 	get blockLength(): number;
+	get task(): string;
 	get givenOn(): Date;
 	get dueOn(): Date;
 	get canComplete(): boolean;
@@ -744,7 +753,7 @@ declare class Timetable {
 	private getSuperimposedClassesIndexes;
 	private makeSuperimposedCanceledClassesInvisible;
 }
-interface Attachment {
+interface Attachment3 {
 	id: string;
 	label: string;
 	kind: number;
@@ -761,7 +770,7 @@ declare class StudentAdministration2 {
 	getHomeworkSinceDate(date?: Date): Promise<Homework2>;
 	startPresenceInterval(interval?: number): void;
 	clearPresenceInterval(): void;
-	getInfos(attachment: Attachment, parameters?: {}): void;
+	getInfos(attachment: Attachment3, parameters?: {}): void;
 }
 declare class Child {
 	readonly parent: Parent;
