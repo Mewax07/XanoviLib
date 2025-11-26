@@ -14,6 +14,9 @@ const config: Config = {
 		sideBar: {
 			lastTabsAlwaysOnBottom: false,
 		},
+		effects: {
+			squircle: false,
+		},
 	},
 };
 

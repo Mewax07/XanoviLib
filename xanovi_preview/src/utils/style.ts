@@ -1,3 +1,5 @@
+import { useConfig } from "../context/Config";
+
 export function hexToHSL(hex: string) {
 	hex = hex.replace("#", "");
 
@@ -40,4 +42,9 @@ export function hexToHSL(hex: string) {
 	l = Math.round(l * 100);
 
 	return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
+export function supportSquircle(): boolean {
+	const config = useConfig();
+	return CSS.supports("corner-shape", "squircle") && config.ui.effects.squircle;
 }

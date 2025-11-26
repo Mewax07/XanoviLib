@@ -23,7 +23,8 @@ export const usePronoteConnected = () => {
 		const homepage = async () => admin.getHomepage();
 		const timetable = async (startDate?: Date, endDate?: Date) =>
 			admin.getTimetableFromIntervals(startDate ?? startOfWeek, endDate ?? endOfWeek);
-		const homework = async (start?: number, end?: number) => admin.getHomeworkFromIntervals(start ?? 1, end ?? 52);
+		// const homework = async (start?: number, end?: number) => admin.getHomeworkFromIntervals(start ?? 1, end ?? 52);
+		const homework = async () => admin.getHomeworkSinceDate(new Date());
 
 		return { homepage, timetable, homework };
 	}, [admin]);

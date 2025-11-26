@@ -9,6 +9,9 @@ export interface Config {
 		sideBar: {
 			lastTabsAlwaysOnBottom: boolean;
 		};
+		effects: {
+			squircle: boolean;
+		}
 	};
 	api?: {
 		apiUrl: URL;

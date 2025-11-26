@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePronoteConnected } from "../../../api/homepage";
 import { loadSchedule, saveSchedule } from "../../../cache/scheduleCache";
-import { hexToHSL } from "../../../utils/color";
+import { hexToHSL, supportSquircle } from "../../../utils/style";
 
-import Xanovi from "../../../lib/xanovi_lib";
 import { ONE_HOUR } from "..";
+import Xanovi from "../../../lib/xanovi_lib";
 const pawnote = Xanovi.pronote;
 
 interface Course {
@@ -250,12 +250,12 @@ export const Schedule = () => {
 										pauseBlock = (
 											<div
 												key={`pause-${i}`}
-												className="content no-class"
+												className="content card no-class"
 												style={
 													{
 														"--_-accent": "0",
 														"--_-light": "0%",
-													} as any
+													} as React.CSSProperties
 												}
 											>
 												<div>
@@ -269,7 +269,7 @@ export const Schedule = () => {
 															"--_-accent": "0",
 															"--_-light": "0%",
 															"--_-opacity": "0.4",
-														} as any
+														} as React.CSSProperties
 													}
 												></div>
 
@@ -298,7 +298,7 @@ export const Schedule = () => {
 											{pauseBlock}
 
 											<div
-												className={`content ${durationClass}`}
+												className={`content card ${durationClass} ${supportSquircle() && "squircle"}`}
 												key={i}
 												style={
 													{
@@ -308,7 +308,7 @@ export const Schedule = () => {
 														"--_-af-accent": accent,
 														"--_-af-light": "70%",
 														"--_-af-opacity": "0.9",
-													} as any
+													} as React.CSSProperties
 												}
 											>
 												<div className="time">
@@ -333,7 +333,7 @@ export const Schedule = () => {
 															"--_-accent": accent,
 															"--_-light": "60%",
 															"--_-opacity": "0.8",
-														} as any
+														} as React.CSSProperties
 													}
 												></div>
 
@@ -355,7 +355,7 @@ export const Schedule = () => {
 																		"--_-accent": accent,
 																		"--_-light": "60%",
 																		"--_-opacity": "0.8",
-																	} as any
+																	} as React.CSSProperties
 																}
 															>
 																{course.status}

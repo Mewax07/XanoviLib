@@ -1,6 +1,8 @@
+/* Importation */
 @import url("../lib/css/app.css");
 @import url("./root.css");
 
+/* Fonts */
 @font-face {
 	font-family: "Space Grotesk";
 	src: url("../assets/font/SpaceGrotesk-Regular.ttf") format("truetype");
@@ -9,6 +11,7 @@
 	font-size: 14px;
 }
 
+/* Title Bar */
 section.navbar {
 	width: 100%;
 	height: 2em;
@@ -148,6 +151,8 @@ section.main-ctn {
 	height: calc(100% - 2em);
 }
 
+/* Workspace */
+
 .workspace {
 	width: 100%;
 	height: 100%;
@@ -155,6 +160,8 @@ section.main-ctn {
 	display: flex;
 	flex-direction: row;
 }
+
+/* Side panel (Profile, Tabs) */
 
 .workspace .side-panel {
 	flex-shrink: 0;
@@ -186,6 +193,43 @@ section.main-ctn {
 	display: flex;
 	flex-direction: row;
 	gap: 0.5em;
+}
+
+.workspace .side-panel .profile-info .text {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.workspace .side-panel .profile-info .icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.workspace .side-panel .profile-info .icon img.profile {
+	border-radius: 50%;
+	width: 3.2em;
+	height: 3.2em;
+	object-fit: cover;
+}
+
+.workspace .side-panel .profile-info .name {
+	font-size: 1.2em;
+	font-weight: 600;
+	max-width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.workspace .side-panel .profile-info .type {
+	font-size: 0.9em;
+	color: var(--_-c-t);
+	max-width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .workspace .side-panel .tabs {
@@ -227,42 +271,7 @@ section.main-ctn {
 	font-size: 1.2em;
 }
 
-.workspace .side-panel .profile-info .text {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-}
-
-.workspace .side-panel .profile-info .icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.workspace .side-panel .profile-info .icon img.profile {
-	border-radius: 50%;
-	width: 3.2em;
-	height: 3.2em;
-	object-fit: cover;
-}
-
-.workspace .side-panel .profile-info .name {
-	font-size: 1.2em;
-	font-weight: 600;
-	max-width: 90%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.workspace .side-panel .profile-info .type {
-	font-size: 0.9em;
-	color: var(--_-c-t);
-	max-width: 90%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
+/* Main Panel */
 
 .workspace .main-panel {
 	flex-grow: 1;
@@ -283,6 +292,8 @@ section.main-ctn {
 	gap: 1em;
 	height: calc(100% - 2em);
 }
+
+/* Basic content */
 
 .workspace .main-panel .content {
 	position: relative;
@@ -307,7 +318,9 @@ section.main-ctn {
 	margin-bottom: 0.3em;
 }
 
-.workspace .main-panel .content .content {
+/* Classic Cards */
+
+.workspace .main-panel .content .card {
 	min-height: 1.8em;
 	max-height: 6em;
 	width: calc(100% - 2em);
@@ -329,12 +342,12 @@ section.main-ctn {
 		border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.workspace .main-panel .content .content:hover {
+.workspace .main-panel .content .card:hover {
 	background-color: hsla(calc(var(--_-af-accent)), 90%, 9%, 0.9);
 }
 
-.workspace .main-panel .content .content::before,
-.workspace .main-panel .content .content::after {
+.workspace .main-panel .content .card::before,
+.workspace .main-panel .content .card::after {
 	content: "";
 	position: absolute;
 	bottom: 0;
@@ -346,31 +359,30 @@ section.main-ctn {
 	background: transparent;
 	transition: background 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.workspace .main-panel .content .content::before {
+.workspace .main-panel .content .card::before {
 	left: 0;
 	background-color: hsl(var(--_-bf-accent), var(--_-bf-light), 50%, var(--_-bf-opacity));
 }
 
-.workspace .main-panel .content .content::after {
+.workspace .main-panel .content .card::after {
 	right: 0;
 	background-color: hsl(var(--_-af-accent), var(--_-af-light), 45%, var(--_-af-opacity));
 }
 
-.workspace .main-panel .content .content:hover::before {
+.workspace .main-panel .content .card:hover::before {
 	background-color: hsl(var(--_-af-accent), var(--_-af-light), 45%, var(--_-af-opacity));
 }
 
-.workspace .main-panel .content .content:hover::after {
+.workspace .main-panel .content .card:hover::after {
 	background-color: hsl(var(--_-bf-accent), var(--_-bf-light), 50%, var(--_-bf-opacity));
 }
 
-.workspace .main-panel .content:hover::-webkit-scrollbar-thumb,
-.workspace .main-panel .content .work-week .work-day .content:hover::-webkit-scrollbar-thumb,
-.workspace .main-panel .results.content:hover > .notes-ctn::-webkit-scrollbar-thumb {
-	background-color: #76767644;
+.workspace .main-panel .content .card.squircle {
+	border-radius: 3.2em;
+	corner-shape: squircle;
 }
 
-.workspace .main-panel .content .content .separator {
+.workspace .main-panel .content .card .separator {
 	background: hsl(var(--_-accent), var(--_-light), 50%, var(--_-opacity));
 	width: 6px;
 	min-width: 6px;
@@ -379,19 +391,19 @@ section.main-ctn {
 	border-radius: 0.6em;
 }
 
-.workspace .main-panel .content .content.normal {
+.workspace .main-panel .content .card.normal {
 	height: 5em;
 }
 
-.workspace .main-panel .content .content.expanded {
+.workspace .main-panel .content .card.expanded {
 	height: 6em;
 }
 
-.workspace .main-panel .content .content.no-class {
+.workspace .main-panel .content .card.no-class {
 	height: 1.8em;
 }
 
-.workspace .main-panel .content .content .info {
+.workspace .main-panel .content .card .info {
 	width: 80%;
 	height: 100%;
 	display: flex;
@@ -399,22 +411,14 @@ section.main-ctn {
 	justify-content: space-around;
 }
 
-.workspace .main-panel .content .time {
+.workspace .main-panel .content .card .time {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 }
 
-.workspace .main-panel .content p.matter {
-	font-size: 1.1em;
-	overflow: hidden;
-	max-width: 95%;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.workspace .main-panel .schedule-day .content p.matter {
+.workspace .main-panel .content .card p.matter {
 	font-size: 1.1em;
 	max-width: 90%;
 	overflow: hidden;
@@ -422,35 +426,37 @@ section.main-ctn {
 	white-space: nowrap;
 }
 
-.workspace .main-panel .schedule-day .content .utils {
+.workspace .main-panel .content .card .utils {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: 0.4em;
 }
 
-.workspace .main-panel .schedule-day .content .utils p {
+.workspace .main-panel .content .card .utils p {
 	max-width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.workspace .main-panel .content .content.no-class .utils {
+.workspace .main-panel .content .card.no-class .utils {
 	width: 79%;
 }
 
-.workspace .main-panel .schedule-day .content .status {
+.workspace .main-panel .content .card .status {
 	display: flex;
 	align-items: center;
 	gap: 0.6em;
 }
-.workspace .main-panel .schedule-day .content .status p.change {
+.workspace .main-panel .content .card .status p.change {
 	background: hsl(var(--_-accent), var(--_-light), 50%, var(--_-opacity));
 	padding: 0.1em 0.6em;
 	border-radius: 1.6em;
 	width: max-content;
 }
+
+/* Schedule "Carousel" */
 
 .workspace .main-panel .carousel-container {
 	position: relative;
@@ -463,6 +469,8 @@ section.main-ctn {
 	gap: 0.5em;
 	overflow-y: auto !important;
 }
+
+/* Shadows (Not implemented in react) */
 
 .shadow {
 	z-index: 100;
@@ -487,64 +495,45 @@ section.main-ctn {
 	border-bottom-right-radius: 0.6em;
 }
 
-.workspace .main-panel .carousel-container .carousel .schedule-day {
+/* Schedule */
+
+.workspace .main-panel .schedule-day {
 	min-width: 380px;
 	height: calc(100vh - 7em);
 	box-sizing: border-box;
-}
-
-.workspace .main-panel .content .work-week .work-day .content .info p.context,
-.workspace .main-panel .content .content p.date {
-	font-size: 1em;
-	color: var(--_-c-t);
-	max-height: 3em;
-	max-width: 95%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.workspace .main-panel .work-week .work-day .content .info p.context {
-	font-size: 0.9em !important;
-	color: var(--_-c-t);
-	max-width: 95%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.workspace .main-panel .content .access-pos {
-	position: absolute;
-	top: 0.5em;
-	right: 3em;
-	cursor: pointer;
-}
-
-.workspace .main-panel .content .access-pos .access {
-	position: fixed;
-	z-index: 100;
-	background: var(--_-bg_c);
-	padding: 10px;
-	border: 2px solid var(--_-ws_b_c);
-	width: 1.2em;
-	height: 1.2em;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 0.6em;
-	&:hover {
-		background: var(--_-bg_c_h);
-	}
-}
-
-.results.content,
-.schedule-day {
 	flex-direction: column;
 	display: flex;
 	gap: 0.3em;
 }
 
+/* Homework */
+
+.workspace .main-panel .work-week {
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto !important;
+	height: 100%;
+	width: 100%;
+}
+
+.workspace .main-panel .work-week .days-scroll {
+	flex: 1;
+	overflow-y: auto;
+	padding-right: 6px;
+	scrollbar-width: thin;
+	display: flex;
+	gap: 0.5em;
+}
+
+/* Box Shadow */
+
 .workspace .shorcuts:hover,
 .workspace .content:hover {
 	box-shadow: 0px 3px 8px var(--sh-c);
+}
+
+/* Scrollbar */
+
+.workspace .main-panel .content:hover::-webkit-scrollbar-thumb {
+	background-color: #76767644;
 }
