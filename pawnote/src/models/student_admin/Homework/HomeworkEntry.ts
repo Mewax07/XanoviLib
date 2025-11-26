@@ -12,6 +12,30 @@ import { Child } from "~p0/models/user/parent";
 import { Student } from "~p0/models/user/student";
 import { User } from "~p0/models/user/user";
 
+export class HomeworkEntry {
+	/** @internal */
+	public constructor(
+		protected readonly parameters: Parameters,
+		protected readonly user: User,
+		protected readonly resource: Student | Child,
+		protected readonly h_assignment: Homework_ToDoList,
+		protected readonly h_content: Homework_Content,
+		protected readonly h_resource: Homework_Resource,
+	) {}
+
+	public get assignment(): HomeworkAssignmentEntry {
+		return new HomeworkAssignmentEntry(this.parameters, this.user, this.resource, this.h_assignment);
+	}
+
+	public get content(): HomeowrkContentEntry {
+		return new HomeowrkContentEntry(this.parameters, this.user, this.resource, this.h_content);
+	}
+
+	public get resources(): HomeowrkResourceEntry {
+		return new HomeowrkResourceEntry(this.parameters, this.user, this.resource, this.h_resource);
+	}
+}
+
 export class HomeworkAssignmentEntry {
 	/** @internal */
 	public constructor(
@@ -130,7 +154,7 @@ export class HomeowrkResourceEntry {
 	}
 
 	public get resources(): Resource {
-		return new Resource(this.assignment.resources);
+		return new Resource(this.assignment.resources!);
 	}
 
 	public get subjectId(): string {

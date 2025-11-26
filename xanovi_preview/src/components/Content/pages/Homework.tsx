@@ -29,20 +29,20 @@ export const Work = () => {
 			const grouped: Record<string, HomeworkItem[]> = {};
 
 			for (const hw of homeworkInfo.entries) {
-				const dateObj = new Date(hw.dueOn);
+				const dateObj = new Date(hw.assignment.dueOn);
 				const dayKey = dateObj.toISOString().split("T")[0];
 
 				if (!grouped[dayKey]) grouped[dayKey] = [];
 
 				grouped[dayKey].push({
 					subject: {
-						id: hw.subject.id,
-						name: hw.subject.label,
+						id: hw.assignment.subject.id,
+						name: hw.assignment.subject.label,
 					},
-					description: hw.task,
-					givenDate: hw.givenOn,
-					dueDate: hw.dueOn,
-					completed: hw.isCompleted,
+					description: hw.assignment.task,
+					givenDate: hw.assignment.givenOn,
+					dueDate: hw.assignment.dueOn,
+					completed: hw.assignment.isCompleted,
 				});
 			}
 

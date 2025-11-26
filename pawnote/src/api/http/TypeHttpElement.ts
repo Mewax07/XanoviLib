@@ -12,7 +12,7 @@ export class TypeHttpElement<T extends new (...args: any[]) => any> {
 	public array = (value: Element<InstanceType<T>>): Array<InstanceType<T>> => {
 		if (value._T !== TypeHttpVariable.TypeHttpElement) throw new Error("HTTP type is not compatible");
 
-		if (!Array.isArray(value.V)) throw new Error("TypeHttpElement deserializer expected an Array");
+		if (!Array.isArray(value.V)) throw new Error(`TypeHttpElement deserializer expected an Array ${this.Model}, ${value}`);
 
 		return value.V.map((inner) => deserialize(this.Model, inner));
 	};
@@ -20,7 +20,7 @@ export class TypeHttpElement<T extends new (...args: any[]) => any> {
 	public single = (value: Element<InstanceType<T>>): Array<InstanceType<T>> => {
 		if (value._T !== TypeHttpVariable.TypeHttpElement) throw new Error("HTTP type is not compatible");
 
-		if (Array.isArray(value.V)) throw new Error("TypeHttpElement deserializer expected a single object");
+		if (Array.isArray(value.V)) throw new Error(`TypeHttpElement deserializer expected a single object ${this.Model}, ${value}`);
 
 		return deserialize(this.Model, value.V);
 	};

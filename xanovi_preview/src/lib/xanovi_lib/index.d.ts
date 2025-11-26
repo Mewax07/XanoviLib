@@ -592,7 +592,7 @@ declare class Resource2 {
 	kind: number | null;
 	date: Date;
 	subject: ResourceSubject2;
-	resources: Content;
+	resources: Content | null;
 }
 declare class EducationalResource2 {
 	listOfContents: Service2[];
@@ -642,6 +642,17 @@ declare abstract class User {
 declare class Student extends User {
 	readonly administration: StudentAdministration2;
 }
+declare class HomeworkEntry {
+	protected readonly parameters: Parameters;
+	protected readonly user: User;
+	protected readonly resource: Student | Child;
+	protected readonly h_assignment: _Homework2;
+	protected readonly h_content: _Homework;
+	protected readonly h_resource: Resource2;
+	get assignment(): HomeworkAssignmentEntry;
+	get content(): HomeowrkContentEntry;
+	get resources(): HomeowrkResourceEntry;
+}
 declare class HomeworkAssignmentEntry {
 	protected readonly parameters: Parameters;
 	protected readonly user: User;
@@ -663,17 +674,45 @@ declare class HomeworkAssignmentEntry {
 	toggleDone(): Promise<boolean>;
 	setDone(done?: boolean): Promise<boolean>;
 }
+declare class HomeowrkContentEntry {
+	protected readonly parameters: Parameters;
+	protected readonly user: User;
+	protected readonly resource: Student | Child;
+	protected readonly assignment: _Homework;
+	get id(): string;
+	get content(): Content3[];
+}
+declare class HomeowrkResourceEntry {
+	protected readonly parameters: Parameters;
+	protected readonly user: User;
+	protected readonly resource: Student | Child;
+	protected readonly assignment: Resource2;
+	get date(): Date;
+	get resources(): Resource3;
+	get subjectId(): string;
+}
 declare class Subject {
 	private subject;
 	get id(): string;
 	get label(): string;
+}
+declare class Content3 {
+	private content;
+	get id(): string;
+	get attachments(): import("~p0/api/homework/content_and_resource/content/response").Attachment[] | null;
+}
+declare class Resource3 {
+	private resource;
+	get id(): string | null;
+	get label(): string;
+	get kind(): number;
 }
 declare class Homework2 {
 	private parameters;
 	private user;
 	private readonly resource;
 	private homework;
-	readonly entries: Array<HomeworkAssignmentEntry>;
+	readonly entries: Array<HomeworkEntry>;
 	constructor(parameters: Parameters, user: User, resource: Student | Child, homework: HomeworkResponse4);
 }
 declare class GridPreferences {

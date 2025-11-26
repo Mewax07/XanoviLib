@@ -10,7 +10,7 @@ export class Attachment extends Kind {
 
 export class Content extends Id {
 	@rename("ListePieceJointe")
-	@deserializeWith(new TypeHttpElement(Attachment).single)
+	@deserializeWith(new TypeHttpElement(Attachment).array)
 	public unk_ListePieceJointe = t.option(t.array(t.reference(Attachment))); // Unkown ListePieceJointe array result
 
 	/*

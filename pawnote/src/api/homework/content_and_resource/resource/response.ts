@@ -43,7 +43,7 @@ export class Resource {
 
 	@rename("ressources")
 	@deserializeWith(new TypeHttpElement(Content).single)
-	public resources = t.reference(Content);
+	public resources = t.option(t.reference(Content));
 }
 
 export class EducationalResource {
