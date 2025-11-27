@@ -15,7 +15,7 @@ function App() {
 	const handleLogin = async () => {
 		setLoading(true);
 		try {
-			const student = await authStudent(new URL("https://demo.index-education.net/pronote/eleve.html"));
+			const student = await authStudent(false);
 			student.administration.startPresenceInterval();
 			console.log("Connection success:", student?.name);
 		} catch (err) {

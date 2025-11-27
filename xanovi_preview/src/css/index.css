@@ -572,6 +572,10 @@ section.main-ctn {
 	flex-direction: column;
 }
 
+.workspace .main-panel .work-week .days-scroll .homework .content.card {
+	max-height: max-content;
+}
+
 /* Box Shadow */
 
 .workspace .shorcuts:hover,

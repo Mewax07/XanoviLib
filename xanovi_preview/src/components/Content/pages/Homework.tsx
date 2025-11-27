@@ -48,20 +48,37 @@ function backgroundToHSL(hex: string) {
 	};
 }
 
+function parseDateUTC(dateStr: string) {
+	const d = new Date(dateStr);
+	const result = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+	console.log(`[parseDateUTC] dateStr="${dateStr}" -> ${result.toISOString().split("T")[0]}`);
+	return result;
+}
+
+function getMonday(date: Date) {
+	const day = date.getDay(); // 0 = dimanche
+	const diff = (day === 0 ? -6 : 1) - day;
+	const monday = new Date(date);
+	monday.setDate(date.getDate() + diff);
+	monday.setHours(0, 0, 0, 0);
+	console.log(`[getMonday] date=${date.toISOString().split("T")[0]} -> monday=${monday.toISOString().split("T")[0]}`);
+	return monday;
+}
+
 function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): WeekData[] {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
+	console.log(`[groupDaysByWeek] today=${today.toISOString().split("T")[0]}`);
 
-	const day = today.getDay();
-	const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-	const mondayThisWeek = new Date(today.setDate(diff));
-	mondayThisWeek.setHours(0, 0, 0, 0);
-
+	const mondayThisWeek = getMonday(today);
 	const mondayNextWeek = new Date(mondayThisWeek);
 	mondayNextWeek.setDate(mondayNextWeek.getDate() + 7);
-
 	const sundayNextWeek = new Date(mondayNextWeek);
-	sundayNextWeek.setDate(sundayNextWeek.getDate() + 7);
+	sundayNextWeek.setDate(sundayNextWeek.getDate() + 6);
+
+	console.log(
+		`[groupDaysByWeek] mondayThisWeek=${mondayThisWeek.toISOString().split("T")[0]}, mondayNextWeek=${mondayNextWeek.toISOString().split("T")[0]}, sundayNextWeek=${sundayNextWeek.toISOString().split("T")[0]}`,
+	);
 
 	const weekCurrent: [string, HomeworkItem[]][] = [];
 	const weekNext: [string, HomeworkItem[]][] = [];
@@ -69,29 +86,34 @@ function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): Week
 	const sortedDays = Object.keys(homeworksGrouped).sort();
 
 	for (const dayKey of sortedDays) {
-		const date = new Date(dayKey);
+		const date = parseDateUTC(dayKey);
 
 		if (date >= mondayThisWeek && date < mondayNextWeek) {
+			console.log(`[weekCurrent] Adding dayKey=${dayKey}`);
 			weekCurrent.push([dayKey, homeworksGrouped[dayKey]]);
-		} else if (date >= mondayNextWeek && date < sundayNextWeek) {
+		} else if (date >= mondayNextWeek && date <= sundayNextWeek) {
+			console.log(`[weekNext] Adding dayKey=${dayKey}`);
 			weekNext.push([dayKey, homeworksGrouped[dayKey]]);
+		} else {
+			console.log(`[weekOther] Skipping dayKey=${dayKey}`);
 		}
 	}
 
 	function countWeek(week: [string, HomeworkItem[]][]) {
-		let total = 0;
-		let completed = 0;
-
+		let total = 0,
+			completed = 0;
 		for (const [, items] of week) {
 			total += items.length;
 			completed += items.filter((i) => i.completed).length;
 		}
-
 		return { total, completed };
 	}
 
 	const w0 = countWeek(weekCurrent);
 	const w1 = countWeek(weekNext);
+
+	console.log(`[groupDaysByWeek] weekCurrent: total=${w0.total}, completed=${w0.completed}`);
+	console.log(`[groupDaysByWeek] weekNext: total=${w1.total}, completed=${w1.completed}`);
 
 	return [
 		{ days: weekCurrent, weekIndex: 0, total: w0.total, completed: w0.completed },
@@ -218,7 +240,7 @@ export const Work = () => {
 										return (
 											<div
 												key={itemKey}
-												className={`content card ${hw.completed ? "completed" : ""}`}
+												className={`content card`}
 												style={
 													{
 														"--_-bf-accent": color.accent,

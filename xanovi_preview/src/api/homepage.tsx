@@ -29,8 +29,8 @@ export const usePronoteConnected = () => {
 			admin.getTimetableFromIntervals(startDate ?? startOfWeek, endDate ?? endOfWeek);
 		const homework = async (start?: number, end?: number) =>
 			admin.getHomeworkFromIntervals(
-				start ?? admin.getWeekNumberSinceDate(startOfWeek) + 1,
-				end ?? admin.getWeekNumberSinceDate(nextWeek) + 1,
+				start ?? admin.getWeekNumberSinceDate(startOfWeek),
+				end ?? admin.getWeekNumberSinceDate(nextWeek),
 			);
 
 		return { homepage, timetable, homework };

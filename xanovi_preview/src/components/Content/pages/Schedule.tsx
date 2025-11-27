@@ -4,6 +4,7 @@ import { loadSchedule, saveSchedule } from "../../../cache/scheduleCache";
 import { hexToHSL, supportSquircle } from "../../../utils/style";
 
 import { ONE_HOUR } from "..";
+
 import Xanovi from "../../../lib/xanovi_lib";
 const pawnote = Xanovi.pronote;
 
