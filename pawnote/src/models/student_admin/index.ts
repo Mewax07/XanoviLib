@@ -1,6 +1,7 @@
 import { HomeworkAPI } from "~p0/api/homework";
 import { AttachmentKind } from "~p0/api/models/attachment";
 import { Presence } from "~p0/api/presence";
+import { translateToWeekNumber } from "~p0/core";
 import { HomepageAPI } from "../../api/homepage";
 import { TimetableAPI } from "../../api/timetable";
 import { Child } from "../user/parent";
@@ -59,7 +60,7 @@ export class StudentAdministration {
 	public async getHomeworkSinceDate(date?: Date): Promise<Homework> {
 		return new Homework(
 			this._user.parameters,
-			this._user, 
+			this._user,
 			this._resource,
 			await new HomeworkAPI(this._user, this._resource).sendSinceDate(date),
 		);
@@ -94,6 +95,10 @@ export class StudentAdministration {
 			const encrypted = this._user.session.aes.encrypt(data);
 			url = `${this._user.session.url}/FichiersExternes${encrypted}/${encodeURIComponent(label)}?Session=${this._user.id}`;
 		}
+	}
+
+	public getWeekNumberSinceDate(date: Date) {
+		return translateToWeekNumber(date, this._user.parameters.firstDate);
 	}
 }
 

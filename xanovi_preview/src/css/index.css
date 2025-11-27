@@ -525,6 +525,53 @@ section.main-ctn {
 	gap: 0.5em;
 }
 
+.workspace .main-panel .work-week .days-scroll .content .progress {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5em;
+}
+
+.workspace .main-panel .work-week .days-scroll .content svg.circle-progress {
+	width: 50%;
+	height: auto;
+	background-color: var(--_-ws_c);
+	border-radius: 0.6em;
+	border: 2px solid var(--_-ws_b_c);
+}
+
+.workspace .main-panel .work-week .days-scroll .content .circle-progress-bg {
+	stroke-width: 8px;
+	stroke: #888;
+	fill: none;
+}
+
+.workspace .main-panel .work-week .days-scroll .content .circle-progress-value {
+	stroke-width: 6px;
+	stroke: white;
+	stroke-linecap: round;
+	fill: none;
+	transform: rotate(-90deg);
+	transform-origin: 50% 50%;
+}
+
+.workspace .main-panel .work-week .days-scroll .content .circle-progress-text {
+	font-size: 18px;
+	fill: #888;
+	font-weight: 600;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .day-content {
+	display: flex;
+	gap: 0.5em;
+	flex-direction: column;
+}
+
 /* Box Shadow */
 
 .workspace .shorcuts:hover,

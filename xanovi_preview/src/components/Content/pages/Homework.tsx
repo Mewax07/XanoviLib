@@ -5,6 +5,7 @@ import { ONE_HOUR } from "..";
 import { loadHomework, saveHomework } from "../../../cache/homeworkCache";
 import Xanovi from "../../../lib/xanovi_lib";
 import { hexToHSL } from "../../../utils/style";
+import CircleProgress from "../../CircleProgress";
 const pawnote = Xanovi.pronote;
 
 interface HomeworkItem {
@@ -21,6 +22,9 @@ interface HomeworkItem {
 
 interface WeekData {
 	days: [string, HomeworkItem[]][];
+	weekIndex: number;
+	total: number;
+	completed: number;
 }
 
 function switchMatterName(name: string): string {
@@ -30,7 +34,7 @@ function switchMatterName(name: string): string {
 		.join(" ");
 }
 
-function convertLinks(text: string) {
+function convertLinks(text: string): string {
 	return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
 }
 
@@ -45,26 +49,60 @@ function backgroundToHSL(hex: string) {
 }
 
 function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): WeekData[] {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const day = today.getDay();
+	const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+	const mondayThisWeek = new Date(today.setDate(diff));
+	mondayThisWeek.setHours(0, 0, 0, 0);
+
+	const mondayNextWeek = new Date(mondayThisWeek);
+	mondayNextWeek.setDate(mondayNextWeek.getDate() + 7);
+
+	const sundayNextWeek = new Date(mondayNextWeek);
+	sundayNextWeek.setDate(sundayNextWeek.getDate() + 7);
+
+	const weekCurrent: [string, HomeworkItem[]][] = [];
+	const weekNext: [string, HomeworkItem[]][] = [];
+
 	const sortedDays = Object.keys(homeworksGrouped).sort();
-	const weekDays = sortedDays.slice(0, 21);
 
-	const weeks: WeekData[] = [];
-	const daysArray = weekDays.map((day) => [day, homeworksGrouped[day]] as [string, HomeworkItem[]]);
+	for (const dayKey of sortedDays) {
+		const date = new Date(dayKey);
 
-	for (let i = 0; i < 3; i++) {
-		const start = i * 7;
-		const end = start + 7;
-		weeks.push({
-			days: daysArray.slice(start, end),
-		});
+		if (date >= mondayThisWeek && date < mondayNextWeek) {
+			weekCurrent.push([dayKey, homeworksGrouped[dayKey]]);
+		} else if (date >= mondayNextWeek && date < sundayNextWeek) {
+			weekNext.push([dayKey, homeworksGrouped[dayKey]]);
+		}
 	}
-	return weeks;
+
+	function countWeek(week: [string, HomeworkItem[]][]) {
+		let total = 0;
+		let completed = 0;
+
+		for (const [, items] of week) {
+			total += items.length;
+			completed += items.filter((i) => i.completed).length;
+		}
+
+		return { total, completed };
+	}
+
+	const w0 = countWeek(weekCurrent);
+	const w1 = countWeek(weekNext);
+
+	return [
+		{ days: weekCurrent, weekIndex: 0, total: w0.total, completed: w0.completed },
+		{ days: weekNext, weekIndex: 1, total: w1.total, completed: w1.completed },
+	];
 }
 
 export const Work = () => {
 	const pronote = usePronoteConnected();
 
-	const [_, setHomeworks] = useState<Record<string, HomeworkItem[]>>({});
+	const [homeworks, setHomeworks] = useState<Record<string, HomeworkItem[]>>({});
 	const [weeksData, setWeeksData] = useState<WeekData[]>([]);
 
 	useEffect(() => {
@@ -74,19 +112,20 @@ export const Work = () => {
 			const grouped: Record<string, HomeworkItem[]> = {};
 
 			for (const hw of homeworkInfo.entries) {
-				const dateObj = new Date(hw.assignment.dueOn);
-				const dayKey = dateObj.toISOString().split("T")[0];
+				const dueDate = new Date(hw.assignment.dueOn);
+				const givenDate = new Date(hw.assignment.givenOn);
+				const key = dueDate.toISOString().split("T")[0];
 
-				if (!grouped[dayKey]) grouped[dayKey] = [];
+				if (!grouped[key]) grouped[key] = [];
 
-				grouped[dayKey].push({
+				grouped[key].push({
 					subject: {
 						id: hw.assignment.subject.id,
 						name: hw.assignment.subject.label,
 					},
 					description: hw.assignment.task,
-					givenDate: hw.assignment.givenOn,
-					dueDate: hw.assignment.dueOn,
+					givenDate,
+					dueDate,
 					completed: hw.assignment.isCompleted,
 					backgroundColor: hw.assignment.backgroundColor,
 				});
@@ -101,46 +140,65 @@ export const Work = () => {
 
 		const loadData = async () => {
 			const cache = await loadHomework<Record<string, HomeworkItem[]>>();
-			let groupedHomeworks: Record<string, HomeworkItem[]> = {};
-
 			const hasInternet = navigator.onLine;
 
 			if (cache && Date.now() - cache.savedAt < ONE_HOUR) {
-				console.log("Using cached homework");
-				groupedHomeworks = cache.data;
-			} else if (!hasInternet && cache) {
-				console.log("No internet, using old cache");
-				groupedHomeworks = cache.data;
-			} else {
-				try {
-					console.log("Fetching new Homework...");
-					const homeworkInfo = await pronote.homework();
-					groupedHomeworks = processData(homeworkInfo);
-					await saveHomework(groupedHomeworks);
-				} catch (err) {
-					console.error("Fetch error:", err);
-					if (cache) {
-						console.log("Falling back to cache...");
-						groupedHomeworks = cache.data;
-					}
-				}
+				console.log("Using cached homeworks");
+				setHomeworks(cache.data);
+				setWeeksData(groupDaysByWeek(cache.data));
+				return;
 			}
 
-			setHomeworks(groupedHomeworks);
-			setWeeksData(groupDaysByWeek(groupedHomeworks));
+			if (!hasInternet && cache) {
+				console.log("No internet, using cached homeworks");
+				setHomeworks(cache.data);
+				setWeeksData(groupDaysByWeek(cache.data));
+				return;
+			}
+
+			try {
+				console.log("Fetching new homeworks...");
+				const homeworkInfo = await pronote.homework();
+
+				const grouped = processData(homeworkInfo);
+
+				setHomeworks(grouped);
+				setWeeksData(groupDaysByWeek(grouped));
+
+				await saveHomework(grouped);
+			} catch (err) {
+				console.error("Fetch error:", err);
+
+				if (cache) {
+					console.log("Falling back to cached homeworks");
+					setHomeworks(cache.data);
+					setWeeksData(groupDaysByWeek(cache.data));
+				}
+			}
 		};
 
 		loadData();
 	}, [pronote]);
 
 	return (
-		<div className="work-weeks-container" style={{ display: "flex", gap: "20px", overflowX: "auto" }}>
-			{weeksData.map((week, weekIndex) => (
-				<div key={weekIndex} className="week-content" style={{ minWidth: "300px", flex: "1 1 30%" }}>
-					<h3>
-						Semaine {weekIndex + 1} ({week.days.length} jours)
-					</h3>
-					<div className="days-scroll">
+		<div className="work-week">
+			{!Object.keys(homeworks).length && <p>Chargement...</p>}
+
+			<div className="days-scroll">
+				{weeksData[0] && weeksData[1] && (
+					<div className="homework content">
+						<div className="progress">
+							<CircleProgress max={weeksData[0].total} value={weeksData[0].completed}></CircleProgress>
+							<CircleProgress max={weeksData[1].total} value={weeksData[1].completed}></CircleProgress>
+						</div>
+
+						<p>
+							Semaine actuelle : {weeksData[0].completed} / {weeksData[0].total} faits
+						</p>
+					</div>
+				)}
+				{weeksData.map((week, index) => (
+					<div key={index} className="homework content">
 						{week.days.map(([day, items]) => {
 							const formattedDate = new Date(day).toLocaleDateString("fr-FR", {
 								weekday: "long",
@@ -149,17 +207,18 @@ export const Work = () => {
 							});
 
 							return (
-								<div key={day} className="content">
+								<div key={day} className="day-content">
 									<p className="title">Le {formattedDate}</p>
 
-									{items.map((hw, idx) => {
+									{items.map((hw) => {
 										const correctedName = switchMatterName(hw.subject.name);
 										const color = backgroundToHSL(hw.backgroundColor);
+										const itemKey = `${day}-${hw.subject.id}-${hw.description.substring(0, 10)}`;
 
 										return (
 											<div
-												key={idx}
-												className="content card"
+												key={itemKey}
+												className={`content card ${hw.completed ? "completed" : ""}`}
 												style={
 													{
 														"--_-bf-accent": color.accent,
@@ -174,7 +233,7 @@ export const Work = () => {
 												<div
 													className="check"
 													onClick={() => {
-														console.log("toggle", hw);
+														console.log("toggle completion for:", hw);
 													}}
 												>
 													<i
@@ -204,8 +263,8 @@ export const Work = () => {
 							);
 						})}
 					</div>
-				</div>
-			))}
+				))}
+			</div>
 		</div>
 	);
 };

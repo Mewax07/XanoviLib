@@ -810,6 +810,7 @@ declare class StudentAdministration2 {
 	startPresenceInterval(interval?: number): void;
 	clearPresenceInterval(): void;
 	getInfos(attachment: Attachment3, parameters?: {}): void;
+	getWeekNumberSinceDate(date: Date): number;
 }
 declare class Child {
 	readonly parent: Parent;

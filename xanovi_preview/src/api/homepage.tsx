@@ -20,11 +20,18 @@ export const usePronoteConnected = () => {
 		endOfWeek.setDate(startOfWeek.getDate() + 6);
 		endOfWeek.setHours(23, 59, 59, 999);
 
+		const nextWeek = new Date(startOfWeek);
+		nextWeek.setDate(startOfWeek.getDate() + 13);
+		nextWeek.setHours(0, 0, 0, 0);
+
 		const homepage = async () => admin.getHomepage();
 		const timetable = async (startDate?: Date, endDate?: Date) =>
 			admin.getTimetableFromIntervals(startDate ?? startOfWeek, endDate ?? endOfWeek);
-		// const homework = async (start?: number, end?: number) => admin.getHomeworkFromIntervals(start ?? 1, end ?? 52);
-		const homework = async () => admin.getHomeworkSinceDate(new Date());
+		const homework = async (start?: number, end?: number) =>
+			admin.getHomeworkFromIntervals(
+				start ?? admin.getWeekNumberSinceDate(startOfWeek) + 1,
+				end ?? admin.getWeekNumberSinceDate(nextWeek) + 1,
+			);
 
 		return { homepage, timetable, homework };
 	}, [admin]);
