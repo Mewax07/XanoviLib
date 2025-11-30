@@ -574,6 +574,43 @@ section.main-ctn {
 
 .workspace .main-panel .work-week .days-scroll .homework .content.card {
 	max-height: max-content;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .info {
+	width: 100%;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .info .matter {
+	font-size: 1.1em;
+	color: hsl(var(--_-accent), var(--_-light), 50%, var(--_-opacity));
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .info .context {
+	font-size: 0.9em;
+	padding-top: 0.5em;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .top-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .actions {
+	display: flex;
+	gap: 0.5em;
+}
+
+.workspace .main-panel .work-week .days-scroll .homework .content.card .action-btn {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	background: hsl(var(--_-accent), var(--_-light), 50%, var(--_-opacity));
+	padding: 0.4em 0.5em;
+	border-radius: 1.5em;
 }
 
 /* Box Shadow */

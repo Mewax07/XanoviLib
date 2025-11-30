@@ -5,6 +5,7 @@ import { hexToHSL, supportSquircle } from "../../../utils/style";
 
 import { ONE_HOUR } from "..";
 
+import { useConfig } from "../../../context/Config";
 import Xanovi from "../../../lib/xanovi_lib";
 const pawnote = Xanovi.pronote;
 
@@ -79,6 +80,8 @@ function removeDucplicateCourses(courses: Course[]) {
 export const Schedule = () => {
 	const pronote = usePronoteConnected();
 
+	const config = useConfig();
+
 	const [days, setDays] = useState<Record<string, Course[]>>({});
 	const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -122,6 +125,7 @@ export const Schedule = () => {
 			el.removeEventListener("mousemove", mouseMove);
 		};
 	}, []);
+
 	useEffect(() => {
 		if (!pronote) return;
 		const processData = (timetableInfo: InstanceType<typeof pawnote.Timetable>) => {
@@ -210,59 +214,46 @@ export const Schedule = () => {
 	return (
 		<div className="carousel-container">
 			{!Object.keys(days).length && <p>Chargement...</p>}
-
 			<div className="carousel" ref={carouselRef}>
-				{Object.keys(days)
-					.sort()
-					.map((dayKey) => {
-						const courses = days[dayKey];
-						if (!courses.length) return null;
+				{Object.entries(days).map(([dayKey, courses]) => {
+					if (!courses.length) return null;
+					let lastEnd: Date | null = null;
+					const dateObj = new Date(courses[0].startDate);
+					const dayDisplay = `${dateObj.toLocaleDateString("fr-FR", { weekday: "long" })} ${dateObj.getDate()} ${dateObj.toLocaleDateString("fr-FR", { month: "short" })}`;
+					return (
+						<div className="schedule-day content" key={dayKey}>
+							<p className="title">Cours du {dayDisplay}</p>
+							{courses.map((course, i) => {
+								const start = new Date(course.startDate);
+								const end = new Date(course.endDate);
+								const hsl = course.backgroundColor
+									? hexToHSL(course.backgroundColor)
+									: "hsl(210, 50%, 70%)";
+								const accent = hsl.match(/hsl\((\d+)/)?.[1] ?? "210";
 
-						let lastEnd: Date | null = null;
-						const firstCourse = courses[0];
-						const dateObj = new Date(firstCourse.startDate);
+								const pauseBlock =
+									lastEnd && start.getTime() > lastEnd.getTime()
+										? getPauseInfo(lastEnd, start)
+										: null;
+								lastEnd = end;
 
-						const weekdayName = dateObj.toLocaleDateString("fr-FR", { weekday: "long" });
-						const dayNumber = dateObj.getDate();
-						const monthShort = dateObj.toLocaleDateString("fr-FR", { month: "short" });
+								const durationClass = end.getTime() - start.getTime() > 3600000 ? "expanded" : "normal";
+								const minutes = Math.round((end.getTime() - start.getTime()) / 60000);
+								const duration =
+									minutes >= 60
+										? `${Math.floor(minutes / 60)}h${(minutes % 60).toString().padStart(2, "0")}`
+										: `${minutes} min`;
 
-						const dayDisplay = `${weekdayName.charAt(0).toUpperCase() + weekdayName.slice(1)} ${dayNumber} ${monthShort}`;
-
-						return (
-							<div className="schedule-day content" key={dayKey}>
-								<p className="title">Cours du {dayDisplay}</p>
-
-								{courses.length === 0 && <p className="no-class">Aucun cours.</p>}
-
-								{courses.map((course, i) => {
-									const start = new Date(course.startDate);
-									const end = new Date(course.endDate);
-
-									const hsl = course.backgroundColor
-										? hexToHSL(course.backgroundColor)
-										: "hsl(210, 50%, 70%)";
-
-									const accent = hsl.match(/hsl\((\d+)/)?.[1] ?? "210";
-
-									let pauseBlock = null;
-									if (lastEnd && start.getTime() > lastEnd.getTime()) {
-										const { label, icon, duration } = getPauseInfo(lastEnd, start);
-
-										pauseBlock = (
+								return (
+									<React.Fragment key={course.subject.id || i}>
+										{pauseBlock && (
 											<div
-												key={`pause-${i}`}
 												className="content card no-class"
-												style={
-													{
-														"--_-accent": "0",
-														"--_-light": "0%",
-													} as React.CSSProperties
-												}
+												style={{ "--_-accent": "0", "--_-light": "0%" } as React.CSSProperties}
 											>
 												<div>
-													<p className="duration">{duration}</p>
+													<p className="duration">{pauseBlock.duration}</p>
 												</div>
-
 												<div
 													className="separator"
 													style={
@@ -273,105 +264,83 @@ export const Schedule = () => {
 														} as React.CSSProperties
 													}
 												></div>
-
 												<div className="utils">
-													<i className={`fa-regular ${icon}`}></i>
-													<p>{label}</p>
+													<i className={`fa-regular ${pauseBlock.icon}`}></i>
+													<p>{pauseBlock.label}</p>
 												</div>
 											</div>
-										);
-									}
-
-									lastEnd = end;
-
-									const durationClass =
-										end.getTime() - start.getTime() > 3600000 ? "expanded" : "normal";
-
-									const diff = course.endDate.getTime() - course.startDate.getTime();
-									const minutes = Math.round(diff / 60000);
-									const duration =
-										minutes >= 60
-											? `${Math.floor(minutes / 60)}h${(minutes % 60).toString().padStart(2, "0")}`
-											: `${minutes} min`;
-
-									return (
-										<>
-											{pauseBlock}
-
+										)}
+										<div
+											className={`content card ${durationClass} ${supportSquircle(config) ? "squircle" : ""}`}
+											style={
+												{
+													"--_-bf-accent": accent,
+													"--_-bf-light": "80%",
+													"--_-bf-opacity": "0.7",
+													"--_-af-accent": accent,
+													"--_-af-light": "70%",
+													"--_-af-opacity": "0.9",
+												} as React.CSSProperties
+											}
+										>
+											<div className="time">
+												<p>
+													{start.toLocaleTimeString("fr-FR", {
+														hour: "2-digit",
+														minute: "2-digit",
+													})}
+												</p>
+												<p>
+													{end.toLocaleTimeString("fr-FR", {
+														hour: "2-digit",
+														minute: "2-digit",
+													})}
+												</p>
+											</div>
 											<div
-												className={`content card ${durationClass} ${supportSquircle() && "squircle"}`}
-												key={i}
+												className="separator"
 												style={
 													{
-														"--_-bf-accent": accent,
-														"--_-bf-light": "80%",
-														"--_-bf-opacity": "0.7",
-														"--_-af-accent": accent,
-														"--_-af-light": "70%",
-														"--_-af-opacity": "0.9",
+														"--_-accent": accent,
+														"--_-light": "60%",
+														"--_-opacity": "0.8",
 													} as React.CSSProperties
 												}
-											>
-												<div className="time">
-													<p>
-														{start.toLocaleTimeString("fr-FR", {
-															hour: "2-digit",
-															minute: "2-digit",
-														})}
-													</p>
-													<p>
-														{end.toLocaleTimeString("fr-FR", {
-															hour: "2-digit",
-															minute: "2-digit",
-														})}
-													</p>
+											></div>
+											<div className="info">
+												<p className="matter">{course.subject.name}</p>
+												<div className="utils">
+													<i className="fa-regular fa-location-dot"></i>
+													<p>{course.classrooms.join(", ")}</p>
+													<p>|</p>
+													<i className="fa-regular fa-user"></i>
+													<p>{course.teacherNames.join(", ")}</p>
 												</div>
-
-												<div
-													className="separator"
-													style={
-														{
-															"--_-accent": accent,
-															"--_-light": "60%",
-															"--_-opacity": "0.8",
-														} as React.CSSProperties
-													}
-												></div>
-
-												<div className="info">
-													<p className="matter">{course.subject.name}</p>
-													<div className="utils">
-														<i className="fa-regular fa-location-dot"></i>
-														<p>{course.classrooms.join(", ")}</p>
-														<p>|</p>
-														<i className="fa-regular fa-user"></i>
-														<p>{course.teacherNames.join(", ")}</p>
-													</div>
-													<div className="status">
-														{course.status && (
-															<p
-																className="change"
-																style={
-																	{
-																		"--_-accent": accent,
-																		"--_-light": "60%",
-																		"--_-opacity": "0.8",
-																	} as React.CSSProperties
-																}
-															>
-																{course.status}
-															</p>
-														)}
-														<p>{duration}</p>
-													</div>
+												<div className="status">
+													{course.status && (
+														<p
+															className="change"
+															style={
+																{
+																	"--_-accent": accent,
+																	"--_-light": "60%",
+																	"--_-opacity": "0.8",
+																} as React.CSSProperties
+															}
+														>
+															{course.status}
+														</p>
+													)}
+													<p>{duration}</p>
 												</div>
 											</div>
-										</>
-									);
-								})}
-							</div>
-						);
-					})}
+										</div>
+									</React.Fragment>
+								);
+							})}
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

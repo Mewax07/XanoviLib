@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePronoteConnected } from "../../../api/homepage";
 
 import { ONE_HOUR } from "..";
@@ -8,7 +8,15 @@ import { hexToHSL } from "../../../utils/style";
 import CircleProgress from "../../CircleProgress";
 const pawnote = Xanovi.pronote;
 
+declare enum AttachmentDifficulty {
+	None = 0,
+	Easy = 1,
+	Medium = 2,
+	Hard = 3
+}
+
 interface HomeworkItem {
+	id: string;
 	subject: {
 		id: string;
 		name: string;
@@ -18,6 +26,7 @@ interface HomeworkItem {
 	dueDate: Date;
 	completed: boolean;
 	backgroundColor: string;
+	difficulty: AttachmentDifficulty;
 }
 
 interface WeekData {
@@ -51,34 +60,80 @@ function backgroundToHSL(hex: string) {
 function parseDateUTC(dateStr: string) {
 	const d = new Date(dateStr);
 	const result = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
-	console.log(`[parseDateUTC] dateStr="${dateStr}" -> ${result.toISOString().split("T")[0]}`);
 	return result;
 }
 
+function formatLocalDate(date: Date, withYear = false): string {
+	const day = String(date.getDate()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+
+	if (withYear) {
+		const year = date.getFullYear();
+		return `${day}/${month}/${year}`;
+	}
+	return `${day}/${month}`;
+}
+
+const getRemainingTimeText = (dueDate: Date): string => {
+	const now = new Date();
+	let diffInMs = dueDate.getTime() - now.getTime();
+
+	if (diffInMs < 0) {
+		const absDiffInDays = Math.abs(diffInMs) / (1000 * 60 * 60 * 24);
+
+		if (absDiffInDays > 1.5) {
+			return "Échéance dépassée";
+		}
+		return "Échéance passée";
+	}
+
+	const minutes = Math.floor(diffInMs / (1000 * 60));
+	const hours = Math.floor(minutes / 60);
+	const days = Math.floor(hours / 24);
+
+	if (days >= 7) {
+		return dueDate.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+	}
+
+	if (days > 0) {
+		return `Dans ${days}j`;
+	}
+
+	if (hours > 0) {
+		return `Dans ${hours}h`;
+	}
+
+	if (minutes > 0) {
+		return `Dans ${minutes}min`;
+	}
+
+	return "Maintenant";
+};
+
 function getMonday(date: Date) {
-	const day = date.getDay(); // 0 = dimanche
+	const day = date.getDay();
 	const diff = (day === 0 ? -6 : 1) - day;
 	const monday = new Date(date);
 	monday.setDate(date.getDate() + diff);
 	monday.setHours(0, 0, 0, 0);
-	console.log(`[getMonday] date=${date.toISOString().split("T")[0]} -> monday=${monday.toISOString().split("T")[0]}`);
 	return monday;
 }
 
 function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): WeekData[] {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
-	console.log(`[groupDaysByWeek] today=${today.toISOString().split("T")[0]}`);
 
-	const mondayThisWeek = getMonday(today);
-	const mondayNextWeek = new Date(mondayThisWeek);
-	mondayNextWeek.setDate(mondayNextWeek.getDate() + 7);
-	const sundayNextWeek = new Date(mondayNextWeek);
-	sundayNextWeek.setDate(sundayNextWeek.getDate() + 6);
+	let mondayWeek0 = getMonday(today);
 
-	console.log(
-		`[groupDaysByWeek] mondayThisWeek=${mondayThisWeek.toISOString().split("T")[0]}, mondayNextWeek=${mondayNextWeek.toISOString().split("T")[0]}, sundayNextWeek=${sundayNextWeek.toISOString().split("T")[0]}`,
-	);
+	if (today.getDay() === 0) {
+		mondayWeek0.setDate(mondayWeek0.getDate() + 7);
+	}
+
+	const mondayWeek1 = new Date(mondayWeek0);
+	mondayWeek1.setDate(mondayWeek1.getDate() + 7);
+
+	const mondayWeek2 = new Date(mondayWeek1);
+	mondayWeek2.setDate(mondayWeek2.getDate() + 7);
 
 	const weekCurrent: [string, HomeworkItem[]][] = [];
 	const weekNext: [string, HomeworkItem[]][] = [];
@@ -88,14 +143,10 @@ function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): Week
 	for (const dayKey of sortedDays) {
 		const date = parseDateUTC(dayKey);
 
-		if (date >= mondayThisWeek && date < mondayNextWeek) {
-			console.log(`[weekCurrent] Adding dayKey=${dayKey}`);
+		if (date >= mondayWeek0 && date < mondayWeek1) {
 			weekCurrent.push([dayKey, homeworksGrouped[dayKey]]);
-		} else if (date >= mondayNextWeek && date <= sundayNextWeek) {
-			console.log(`[weekNext] Adding dayKey=${dayKey}`);
+		} else if (date >= mondayWeek1 && date < mondayWeek2) {
 			weekNext.push([dayKey, homeworksGrouped[dayKey]]);
-		} else {
-			console.log(`[weekOther] Skipping dayKey=${dayKey}`);
 		}
 	}
 
@@ -112,9 +163,6 @@ function groupDaysByWeek(homeworksGrouped: Record<string, HomeworkItem[]>): Week
 	const w0 = countWeek(weekCurrent);
 	const w1 = countWeek(weekNext);
 
-	console.log(`[groupDaysByWeek] weekCurrent: total=${w0.total}, completed=${w0.completed}`);
-	console.log(`[groupDaysByWeek] weekNext: total=${w1.total}, completed=${w1.completed}`);
-
 	return [
 		{ days: weekCurrent, weekIndex: 0, total: w0.total, completed: w0.completed },
 		{ days: weekNext, weekIndex: 1, total: w1.total, completed: w1.completed },
@@ -127,55 +175,66 @@ export const Work = () => {
 	const [homeworks, setHomeworks] = useState<Record<string, HomeworkItem[]>>({});
 	const [weeksData, setWeeksData] = useState<WeekData[]>([]);
 
-	useEffect(() => {
-		if (!pronote) return;
+	const [updatingHomeworks, setUpdatingHomeworks] = useState(new Set<string>());
 
-		const processData = (homeworkInfo: InstanceType<typeof pawnote.Homework>) => {
-			const grouped: Record<string, HomeworkItem[]> = {};
+	const processData = (homeworkInfo: InstanceType<typeof pawnote.Homework>): Record<string, HomeworkItem[]> => {
+		const grouped: Record<string, HomeworkItem[]> = {};
 
-			for (const hw of homeworkInfo.entries) {
-				const dueDate = new Date(hw.assignment.dueOn);
-				const givenDate = new Date(hw.assignment.givenOn);
-				const key = dueDate.toISOString().split("T")[0];
+		for (const hw of homeworkInfo.entries) {
+			const dueDate = new Date(hw.assignment.dueOn);
+			const givenDate = new Date(hw.assignment.givenOn);
 
-				if (!grouped[key]) grouped[key] = [];
+			const year = dueDate.getFullYear();
+			const month = String(dueDate.getMonth() + 1).padStart(2, "0");
+			const day = String(dueDate.getDate()).padStart(2, "0");
 
-				grouped[key].push({
-					subject: {
-						id: hw.assignment.subject.id,
-						name: hw.assignment.subject.label,
-					},
-					description: hw.assignment.task,
-					givenDate,
-					dueDate,
-					completed: hw.assignment.isCompleted,
-					backgroundColor: hw.assignment.backgroundColor,
-				});
-			}
+			const key = `${year}-${month}-${day}`;
 
-			for (const day in grouped) {
-				grouped[day].sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-			}
+			if (!grouped[key]) grouped[key] = [];
 
-			return grouped;
-		};
+			grouped[key].push({
+				id: hw.assignment.id,
+				subject: {
+					id: hw.assignment.subject.id,
+					name: hw.assignment.subject.label,
+				},
+				description: hw.assignment.task,
+				givenDate,
+				dueDate,
+				completed: hw.assignment.isCompleted,
+				backgroundColor: hw.assignment.backgroundColor,
+				difficulty: hw.assignment.difficultyLevel
+			});
+		}
 
-		const loadData = async () => {
+		for (const day in grouped) {
+			grouped[day].sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+		}
+
+		return grouped;
+	};
+
+	const fetchAndProcessHomeworks = useCallback(
+		async (forceFetch = false) => {
+			if (!pronote) return;
+
 			const cache = await loadHomework<Record<string, HomeworkItem[]>>();
 			const hasInternet = navigator.onLine;
 
-			if (cache && Date.now() - cache.savedAt < ONE_HOUR) {
-				console.log("Using cached homeworks");
-				setHomeworks(cache.data);
-				setWeeksData(groupDaysByWeek(cache.data));
-				return;
-			}
+			if (!forceFetch) {
+				if (cache && Date.now() - cache.savedAt < ONE_HOUR) {
+					console.log("Using cached homeworks");
+					setHomeworks(cache.data);
+					setWeeksData(groupDaysByWeek(cache.data));
+					return;
+				}
 
-			if (!hasInternet && cache) {
-				console.log("No internet, using cached homeworks");
-				setHomeworks(cache.data);
-				setWeeksData(groupDaysByWeek(cache.data));
-				return;
+				if (!hasInternet && cache) {
+					console.log("No internet, using cached homeworks");
+					setHomeworks(cache.data);
+					setWeeksData(groupDaysByWeek(cache.data));
+					return;
+				}
 			}
 
 			try {
@@ -191,16 +250,69 @@ export const Work = () => {
 			} catch (err) {
 				console.error("Fetch error:", err);
 
-				if (cache) {
+				if (cache && !forceFetch) {
 					console.log("Falling back to cached homeworks");
 					setHomeworks(cache.data);
 					setWeeksData(groupDaysByWeek(cache.data));
 				}
 			}
-		};
+		},
+		[pronote],
+	);
 
-		loadData();
-	}, [pronote]);
+	const updateHomeworkCompletion = useCallback(
+		async (dateKey: string, homeworkId: string, currentStatus: boolean) => {
+			if (!pronote) return;
+
+			setUpdatingHomeworks((prev) => new Set(prev).add(homeworkId));
+
+			setHomeworks((prevHomeworks) => {
+				const newHomeworks = { ...prevHomeworks };
+				const dayItems = newHomeworks[dateKey];
+
+				if (dayItems) {
+					const itemIndex = dayItems.findIndex((item) => item.id === homeworkId);
+					if (itemIndex !== -1) {
+						dayItems[itemIndex].completed = !currentStatus;
+					}
+				}
+
+				setWeeksData(groupDaysByWeek(newHomeworks));
+				return newHomeworks;
+			});
+
+			try {
+				const homeworkInfo = await pronote.homework();
+				const homeworkEntry = homeworkInfo.entries.find((hw) => hw.assignment.id === homeworkId);
+
+				if (homeworkEntry) {
+					await homeworkEntry.assignment.toggleDone();
+					console.log(`Toggled completion for ${homeworkId} to ${!currentStatus}`);
+				} else {
+					console.warn("Homework entry not found for API toggle.");
+				}
+
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				await fetchAndProcessHomeworks(true);
+			} catch (error) {
+				console.error("Error toggling homework completion:", error);
+
+				await fetchAndProcessHomeworks(true);
+			} finally {
+				setUpdatingHomeworks((prev) => {
+					const newSet = new Set(prev);
+					newSet.delete(homeworkId);
+					return newSet;
+				});
+			}
+		},
+		[pronote, fetchAndProcessHomeworks],
+	);
+
+	useEffect(() => {
+		fetchAndProcessHomeworks();
+	}, [fetchAndProcessHomeworks]);
 
 	return (
 		<div className="work-week">
@@ -235,7 +347,9 @@ export const Work = () => {
 									{items.map((hw) => {
 										const correctedName = switchMatterName(hw.subject.name);
 										const color = backgroundToHSL(hw.backgroundColor);
-										const itemKey = `${day}-${hw.subject.id}-${hw.description.substring(0, 10)}`;
+										const itemKey = `${day}-${hw.subject.id}-${hw.id}`;
+
+										const isUpdating = updatingHomeworks.has(hw.id);
 
 										return (
 											<div
@@ -252,21 +366,19 @@ export const Work = () => {
 													} as React.CSSProperties
 												}
 											>
-												<div
-													className="check"
-													onClick={() => {
-														console.log("toggle completion for:", hw);
-													}}
-												>
-													<i
-														className={`fa-regular ${
-															hw.completed ? "fa-circle-check" : "fa-circle-dashed"
-														}`}
-													/>
-												</div>
-
 												<div className="info">
-													<p className="matter">{correctedName}</p>
+													<p
+														className="matter"
+														style={
+															{
+																"--_-accent": color.accent,
+																"--_-light": "60%",
+																"--_-opacity": "0.8",
+															} as React.CSSProperties
+														}
+													>
+														{correctedName}
+													</p>
 													<p
 														className="context"
 														dangerouslySetInnerHTML={{
@@ -274,9 +386,57 @@ export const Work = () => {
 														}}
 													/>
 												</div>
-
-												<div className="ai-button" onClick={() => console.log("AI btn:", hw)}>
-													<i className="fa-regular fa-microchip-ai" />
+												<div className="top-info">
+													<div className="actions">
+														<div
+															className={`action-btn check ${isUpdating ? "disabled" : ""}`}
+															style={
+																{
+																	"--_-accent": color.accent,
+																	"--_-light": "60%",
+																	"--_-opacity": "0.8",
+																} as React.CSSProperties
+															}
+															onClick={() => {
+																if (!isUpdating) {
+																	updateHomeworkCompletion(day, hw.id, hw.completed);
+																}
+															}}
+														>
+															<i
+																className={`fa-regular ${
+																	isUpdating
+																		? "fa-spinner-third fa-spin"
+																		: hw.completed
+																			? "fa-circle-check"
+																			: "fa-circle-dashed"
+																}`}
+															/>
+															<p>
+																{isUpdating
+																	? "Validation..."
+																	: hw.completed
+																		? "Terminer"
+																		: "Commencer"}
+															</p>
+														</div>
+														<div
+															className="action-btn"
+															style={
+																{
+																	"--_-accent": color.accent,
+																	"--_-light": "60%",
+																	"--_-opacity": "0.8",
+																} as React.CSSProperties
+															}
+														>
+															<i className="fa-regular fa-clock"></i>
+															<p>{getRemainingTimeText(hw.dueDate)}</p>
+														</div>
+													</div>
+													<div className="given">
+														<p>{formatLocalDate(hw.givenDate)}</p>
+													</div>
 												</div>
 											</div>
 										);

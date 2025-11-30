@@ -20,6 +20,12 @@
 			"allow": [
 				{
 					"url": "https://*.index-education.net/*"
+				},
+				{
+					"url": "https://*.monbureaunumerique.fr/*"
+				},
+				{
+					"url": "https://educonnect.education.gouv.fr/*"
 				}
 			]
 		},
@@ -36,7 +42,13 @@
 		"fs:allow-applocaldata-read-recursive",
 		{
 			"identifier": "fs:allow-applocaldata-write",
-			"allow": [{ "path": "$APP_LOCAL_DATA/org.mewaxdev.xanovi_preview/*" }]
-		}
+			"allow": [
+				{
+					"path": "$APP_LOCAL_DATA/org.mewaxdev.xanovi_preview/*"
+				}
+			]
+		},
+		"window-state:default",
+		"core:webview:allow-clear-all-browsing-data"
 	]
 }

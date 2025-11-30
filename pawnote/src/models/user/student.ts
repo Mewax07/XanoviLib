@@ -13,4 +13,12 @@ export class Student extends User {
 		super(user, session, parameters, authentication);
 		this.administration = new StudentAdministration(this);
 	}
+
+	public get profilePicture() {
+		return this.administration.getInfos({
+			id: this.user.resource.id,
+			kind: this.user.resource.kind,
+			label: "photo.jpg",
+		});
+	}
 }

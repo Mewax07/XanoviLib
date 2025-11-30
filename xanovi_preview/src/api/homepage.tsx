@@ -7,10 +7,16 @@ export const usePronoteConnected = () => {
 	return useMemo(() => {
 		if (!admin) return null;
 
-		// TODO: Show if timetable send good date.
 		const now = new Date();
 		const dayOfWeek = now.getDay();
-		const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+		let daysToSubtract: number;
+
+		if (dayOfWeek === 0) {
+			daysToSubtract = -1;
+		} else {
+			daysToSubtract = dayOfWeek - 1;
+		}
 
 		const startOfWeek = new Date(now);
 		startOfWeek.setDate(now.getDate() - daysToSubtract);
@@ -25,8 +31,10 @@ export const usePronoteConnected = () => {
 		nextWeek.setHours(0, 0, 0, 0);
 
 		const homepage = async () => admin.getHomepage();
+
 		const timetable = async (startDate?: Date, endDate?: Date) =>
 			admin.getTimetableFromIntervals(startDate ?? startOfWeek, endDate ?? endOfWeek);
+
 		const homework = async (start?: number, end?: number) =>
 			admin.getHomeworkFromIntervals(
 				start ?? admin.getWeekNumberSinceDate(startOfWeek),

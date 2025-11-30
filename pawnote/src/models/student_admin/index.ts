@@ -92,9 +92,19 @@ export class StudentAdministration {
 				...parameters,
 			});
 
-			const encrypted = this._user.session.aes.encrypt(data);
-			url = `${this._user.session.url}/FichiersExternes${encrypted}/${encodeURIComponent(label)}?Session=${this._user.id}`;
+			const encryptedBytes = this._user.session.aes.encrypt(data);
+			const encrypted = Array.from(encryptedBytes)
+				.map((b) => b.toString(16).padStart(2, "0"))
+				.join("");
+			url = `${this._user.session.url}/FichiersExternes/${encrypted}/${encodeURIComponent(label)}?Session=${this._user.session.homepage.id}`;
 		}
+
+		return {
+			kind,
+			id,
+			label,
+			url,
+		};
 	}
 
 	public getWeekNumberSinceDate(date: Date) {

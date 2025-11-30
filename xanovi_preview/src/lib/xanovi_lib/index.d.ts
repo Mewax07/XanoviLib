@@ -641,6 +641,12 @@ declare abstract class User {
 }
 declare class Student extends User {
 	readonly administration: StudentAdministration2;
+	get profilePicture(): {
+		kind: number;
+		id: string;
+		label: string;
+		url: string;
+	};
 }
 declare class HomeworkEntry {
 	protected readonly parameters: Parameters;
@@ -809,7 +815,12 @@ declare class StudentAdministration2 {
 	getHomeworkSinceDate(date?: Date): Promise<Homework2>;
 	startPresenceInterval(interval?: number): void;
 	clearPresenceInterval(): void;
-	getInfos(attachment: Attachment3, parameters?: {}): void;
+	getInfos(attachment: Attachment3, parameters?: {}): {
+		kind: number;
+		id: string;
+		label: string;
+		url: string;
+	};
 	getWeekNumberSinceDate(date: Date): number;
 }
 declare class Child {
